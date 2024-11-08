@@ -36,8 +36,15 @@ intPort = 4444                  # Server Port
 intBuff = 1024      # Maximum Size(Bytes) of Data to Receive as
 
 
+# Step 3: Define Global lambda's
+decode_utf = lambda data: data.decode("utf-8")
 
+remove_quotes = lambda string: string.replace('\"', '')
 
+# noinspection PyUnresolvedReferences
+send = lambda data: conn.send(data)
+# noinspection PyUnresolvedReferences
+recv = lambda buffer: conn.recv(buffer)
 
 
 
