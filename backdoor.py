@@ -139,7 +139,7 @@ def work():
         exit(0)
 
 
-# Step 9: Define a Function to Create Threads
+# Step 9: Define a Function to Create Threads and run work() Multithreading
 def create_threads():
     for _ in range(intThreads):
         objThread = Thread(target=work)
@@ -147,6 +147,15 @@ def create_threads():
         objThread.start()
 
     queue.join()
+
+
+# Step 10: Define a Function to Create Jobs
+def create_jobs():
+    for intThreads in arrJobs:
+        queue.put(intThreads)
+
+    queue.join()
+
 
 
 
