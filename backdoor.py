@@ -10,7 +10,8 @@ End Developing Date:
 
 # Step 0: Import requires libraries
 
-import socket
+# import socket
+from socket import socket, SOL_SOCKET, SO_REUSEADDR, error as SocketError
 import os
 from queue import Queue
 from time import sleep
@@ -35,6 +36,7 @@ intPort = 4444                  # Server Port
 
 intBuff = 1024      # Maximum Size(Bytes) of Data to Receive as
 
+objSocket = None      # Socket Object
 
 # Step 3: Define Global lambda's
 decode_utf = lambda data: data.decode("utf-8")
@@ -62,9 +64,15 @@ def recvall(buffer):
         if len(bytesData) == buffer:
             return bytesData
 
+# Step 5: Define a Function to Create Socket Connection
+def create_socket():
+    global objSocket
+    try:
+        objSocket = socket()
+        objSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
-
-
+    except SocketError as e:
+        print(f'[-] Error while Creating Socket. \n[-] Error: {e}')
 
 
 
