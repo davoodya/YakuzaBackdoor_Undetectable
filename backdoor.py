@@ -13,6 +13,8 @@ End Developing Date:
 from queue import Queue
 # import socket
 from socket import socket, SOL_SOCKET, SO_REUSEADDR, error as SocketError
+from time import sleep
+from threading import Thread
 
 """ Section 1: Develop Utitlity Objects(Global Variables, lambda's, functions) """
 
@@ -42,7 +44,6 @@ remove_quotes = lambda string: string.replace('\"', '')
 send = lambda data: conn.send(data)
 # noinspection PyUnresolvedReferences
 recv = lambda buffer: conn.recv(buffer)
-
 
 # Step 4: Define a Function to Receive a Large Amount of Data
 def recvall(buffer):
@@ -109,3 +110,61 @@ def socket_accept():
         except SocketError as e:
             print(f'[-] Error while Accepting Connection. \n[-] Error: {e}')
             continue
+
+
+
+""" Section 2: Implement Multithreading """
+
+# Step 8: Define the Main Job Function, which use as a Thread in Multithreading
+def work():
+    while True:
+        intValue = queue.get()
+
+        if intValue == 1:
+            create_socket()
+            socket_bind()
+            socket_accept()
+
+        elif intValue == 2:
+            while True:
+                sleep(20)
+
+                if len(arrAddresses) > 0:
+                    # Write main_menu() in next steps
+                    # main_menu()
+                    break
+
+        queue.task_done()
+        queue.task_done()
+        exit(0)
+
+
+# Step 9: Define a Function to Create Threads
+def create_threads():
+    for _ in range(intThreads):
+        objThread = Thread(target=work)
+        objThread.daemon = True
+        objThread.start()
+
+    queue.join()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
