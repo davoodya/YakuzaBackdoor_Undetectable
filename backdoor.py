@@ -36,7 +36,7 @@ intPort = 4444                  # Server Port
 
 intBuff = 1024      # Maximum Size(Bytes) of Data to Receive as
 
-objSocket = None      # Socket Object
+# objSocket = None      # Socket Object
 
 # Step 3: Define Global lambda's
 decode_utf = lambda data: data.decode("utf-8")
@@ -75,6 +75,17 @@ def create_socket():
         print(f'[-] Error while Creating Socket. \n[-] Error: {e}')
 
 
+# Step 6: Define a Function to Bind Socket
+def socket_bind():
+    global objSocket # noqa
+    try:
+        print(f"[+] Listening on Port: {str(intPort)}")
+        objSocket.bind((strHost, intPort)) # noqa
+        objSocket.listen(20)
+
+    except SocketError as e:
+        print(f'[-] Error while Binding Socket. \n[-] Error: {e}')
+        socket_bind()
 
 
 
