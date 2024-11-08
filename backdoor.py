@@ -157,6 +157,9 @@ def create_jobs():
     queue.join()
 
 
+# Step 11: Call Function's to Run the app on Multithreading
+create_threads()
+create_jobs()
 
 
 
