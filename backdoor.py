@@ -47,6 +47,21 @@ send = lambda data: conn.send(data)
 recv = lambda buffer: conn.recv(buffer)
 
 
+# Step 4: Define a Function to Receive a Large Amount of Data
+def recvall(buffer):
+    bytesData = b''
+
+    while True:
+        bytePart = recv(buffer)
+
+        if len(bytePart) == buffer:
+            return bytePart
+
+        bytesData += bytePart
+
+        if len(bytesData) == buffer:
+            return bytesData
+
 
 
 
