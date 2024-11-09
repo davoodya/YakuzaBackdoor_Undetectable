@@ -175,13 +175,9 @@ def menu_help():
     """)
 
 
-# Step 13: Define a Function for Main Menu
 def list_connections():
     pass
 
-
-def close():
-    pass
 
 # Step 13: Define a Function for Main Menu
 def main_menu():
@@ -201,6 +197,24 @@ def main_menu():
         else:
             print("[-] Invalid Choice, Please Try Again")
             main_menu()     # or continue
+
+
+# Step 14: Define a Function to Close Connection and Application
+def close():
+    global arrConnections, arrAddresses
+
+    if len(arrAddresses) == 0:
+        return
+
+    for intCounter, conn in enumerate(arrConnections):
+        conn.send(b'exit')
+        # conn.send(str.encode('exit'))
+        conn.close()
+
+    del arrConnections; arrConnections = []
+    del arrAddresses; arrAddresses = []
+
+
 
 
 
