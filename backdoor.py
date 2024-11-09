@@ -178,10 +178,6 @@ def menu_help():
     """)
 
 
-def list_connections():
-    pass
-
-
 # Step 13: Define a Function for Main Menu
 def main_menu():
     while True:
@@ -218,7 +214,23 @@ def close():
     del arrAddresses; arrAddresses = []
 
 
+# Step 16: Define a Function to List All Connection's
+def list_connections():
+    if len(arrConnections) > 0:
+        strClients = ''
 
+        for intCounter, conn in enumerate(arrConnections):
+
+            strClients += str(intCounter) + 4*" " + str(arrAddresses[intCounter][0]) + 4*" " + \
+                str(arrAddresses[intCounter][1]) + 4*" " + str(arrAddresses[intCounter][2]) + 4*" " + \
+                str(arrAddresses[intCounter][3]) + "\n"
+
+        print("\n" + "ID" + 3*" " + center(str(arrAddresses[0][0]), "IP") + 4*" " + \
+              center(str(arrAddresses[0][1]), "PORT") + 4*" " + \
+              center(str(arrAddresses[0][2]), "PC Name") + 4*" " + \
+              center(str(arrAddresses[0][3]), "OS Name") + "\n" + strClients, end="")
+    else:
+        print("[-] No Connections Found!!.")
 
 
 
