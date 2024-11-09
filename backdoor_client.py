@@ -37,6 +37,12 @@ TMP = environ['APPDATA']
 
 intBuffer = 1024
 
+# Step 3: Define and Create Mutex Object
+mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
+
+if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
+    mutex = None
+    exit(0)
 
 
 
