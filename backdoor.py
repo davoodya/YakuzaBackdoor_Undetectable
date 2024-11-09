@@ -162,6 +162,22 @@ create_threads()
 create_jobs()
 
 
+# Step 12: Define a Function to Show Help Menu
+def menu_help():
+    print("""\n
+    Help Menu:
+    ---------
+    --l, list: Connect to Server
+    
+    --help, help: Show Help Menu
+    --x, exit: Disconnect from Server
+    
+    """)
+
+
+
+
+
 
 
 
