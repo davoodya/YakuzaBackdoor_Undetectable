@@ -86,7 +86,10 @@ def server_connect():
 
 
 
+# Step 7: Define `decode_utf8, recv, send` Lambda's
+decode_utf8 = lambda data: data.decode('utf-8')
 
+recv = lambda buffer: objSocket.recv(buffer)
 
 send = lambda data: objSocket.send(data)
 
