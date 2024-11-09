@@ -175,7 +175,32 @@ def menu_help():
     """)
 
 
+# Step 13: Define a Function for Main Menu
+def list_connections():
+    pass
 
+
+def close():
+    pass
+
+# Step 13: Define a Function for Main Menu
+def main_menu():
+    while True:
+        # Get Command from User input
+        strChoice = input("\n$>> ")
+
+        # List Connections Command, --l or list
+        if strChoice == '--l' or strChoice == 'list':
+            list_connections()
+
+        # Exit Command, --x or exit
+        elif strChoice == '--x' or strChoice == 'exit':
+            close()
+            break
+
+        else:
+            print("[-] Invalid Choice, Please Try Again")
+            main_menu()     # or continue
 
 
 
