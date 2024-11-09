@@ -28,8 +28,9 @@ queue = Queue()  # Used for Handling Jobs in Multithreading
 arrAddresses = []  # Store All Socket Connection Addresses
 arrConnections = []  # Store All Connection Information about Socket Connections
 
-strHost = "192.168.10.100"  # Server IP Address
-intPort = 4444  # Server Port
+# TODO: for testing change SERVER_HOST to Kali WSL IP Address
+SERVER_HOST = "192.168.10.100"  # Server IP Address
+SERVER_PORT = 4444  # Server Port
 
 intBuffer = 1024  # Maximum Size(Bytes) of Data to Receive as
 
@@ -79,8 +80,8 @@ def create_socket():
 def socket_bind():
     global objSocket  # noqa
     try:
-        print(f"[+] Listening on Port: {str(intPort)}")
-        objSocket.bind((strHost, intPort))  # noqa
+        print(f"[+] Listening on Port: {str(SERVER_PORT)}")
+        objSocket.bind((SERVER_HOST, SERVER_PORT))  # noqa
         objSocket.listen(20)
 
     except SocketError as e:
