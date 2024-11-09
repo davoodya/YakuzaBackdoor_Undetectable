@@ -40,6 +40,9 @@ decode_utf = lambda data: data.decode("utf-8")
 
 remove_quotes = lambda string: string.replace('\"', '')
 
+# Define Center Alignment Lambda
+center = lambda string, title: f"{{:^{len(string)}}}".format(title) # noqa
+
 # noinspection PyUnresolvedReferences
 send = lambda data: conn.send(data)
 # noinspection PyUnresolvedReferences
@@ -213,6 +216,8 @@ def close():
 
     del arrConnections; arrConnections = []
     del arrAddresses; arrAddresses = []
+
+
 
 
 
