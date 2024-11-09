@@ -214,7 +214,7 @@ def close():
     del arrAddresses; arrAddresses = []
 
 
-# Step 16: Define a Function to List All Connection's
+# Step 16: Define a Function to List All Connections
 def list_connections():
     if len(arrConnections) > 0:
         strClients = ''
