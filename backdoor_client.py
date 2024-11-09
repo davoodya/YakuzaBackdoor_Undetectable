@@ -44,8 +44,13 @@ if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
     mutex = None
     exit(0)
 
+#  Step 4: Define a Function to Detect Sandboxie
+def detect_sandboxie():
+    try:
+        libHandle = ctypes.windll.LoadLibrary("SbieDll.dll")
+        return " (Sandboxie) "
 
-
+    except: return ""
 
 
 
