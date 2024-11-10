@@ -124,7 +124,6 @@ def menu_help():
     ---------
     --l, list: Connect to Server
     --i [CONNECTION-ID]: Interact with Connections
-    --m [MESSAGE]: Send Message to Client
     
     --help, help: Show Help Menu
     --x, exit: Disconnect from Server
