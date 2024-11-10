@@ -1,16 +1,18 @@
-import os, sys
+import subprocess
+import os
+import win32api
+TMP = os.environ['APPDATA']
 
-filename = os.path.basename(sys.argv[0])
-filepath =os.path.realpath(sys.argv[0])
-print(f"File Name is: {filename}\nFile Path is: {filepath}")
+vbOkOnly = "0"
+vbInformation = "64"
+vbSystemModal = "4096"
 
+def MessageBox(message):
+    objVBS = open(TMP + "/m.vbs", "w")
 
-try:
-    print(f"[+] First Argument is: {sys.argv[1]}")
+    objVBS.write(f'MsgBox "{message}", {vbOkOnly} + {vbInformation} + {vbSystemModal}, "Message"')   # noqa
+    objVBS.close()
 
-except IndexError: print("First Argument Not Enter.")
+    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
 
-try:
-    print(f"[+] Second Argument is: {sys.argv[2]}")
-
-except IndexError: print("Second Argument Not Enter.")
+MessageBox('hello')

