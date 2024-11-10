@@ -133,10 +133,12 @@ def menu_help():
 
 
 # Step 13: Define a Function for Main Menu
+# in the Main Menu only Main Commands(--l, --i [ID],--h ,--x) are available.
+# Other commands define in send_commands() function
 def main_menu():
     while True:
         # Get Command from User input
-        strChoice = input("\n[?] Command $>> ")
+        strChoice = input("\n[Main Menu]$>> ")
 
         # --l or list: Command to List Available Connections
         if strChoice == '--l' or strChoice == 'list':
@@ -154,13 +156,12 @@ def main_menu():
         # --h or help: Command for Show Help Menu
         elif strChoice == '--h' or strChoice == 'help':
             menu_help()
+            main_menu()
 
         # --x or exit: Command for Close Server, Client and Connection
         elif strChoice == '--x' or strChoice == 'exit':
             close()
             break
-
-
 
         # Invalid Choice
         else:
@@ -205,7 +206,7 @@ def list_connections():
 
 # Step 17: Define `select_connection()` Function to Select a Connection
 def select_connection(connection_id, get_response):
-    global conn, arrInfo, selectedID
+    global conn, arrInfo, selectedID # noqa
     try:
         connection_id = int(connection_id)
         selectedID = connection_id
@@ -232,11 +233,13 @@ def select_connection(connection_id, get_response):
 
 
 # Step 19: Define `send_commands()` Function to Send Commands to the Client
+# All Commands except Main Menu Commands should define in this function
 def send_commands():
     while True:
         prompt = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
         strChoice = input(f"{prompt}$>> ")
 
+        #--m [MESSAGE]: Command for Send Message to Client
         if strChoice[:3] == '--m' and len(strChoice) > 3:
             strMsg= 'msg' + strChoice[3:]
             send(str.encode(strMsg))
