@@ -68,7 +68,7 @@ def recvall(buffer):
 
 # Step 5: Define a Function to Create Socket Connection
 def create_socket():
-    global objSocket
+    global objSocket # noqa
     try:
         objSocket = socket()
         objSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -261,14 +261,16 @@ def send_commands():
             strSite = 'site' + strChoice[4:]
             send(str.encode(strSite))
 
+        # TODO: Own Implementation
         # --h, See Commands List Help Menu
         elif strChoice == '--h' or strChoice == 'help':
             commands_help()
             send_commands()
 
+        # --x or exit: Command for Close Server, Client and Connection in Command MODE
         elif strChoice == '--x' or strChoice == 'exit':
             close()
-            break
+            exit(0)
 
 
 
