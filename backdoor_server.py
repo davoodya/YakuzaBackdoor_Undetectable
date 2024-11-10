@@ -151,10 +151,16 @@ def main_menu():
             if conn is not None:
                 send_commands()
 
+        # --h or help: Command for Show Help Menu
+        elif strChoice == '--h' or strChoice == 'help':
+            menu_help()
+
         # --x or exit: Command for Close Server, Client and Connection
         elif strChoice == '--x' or strChoice == 'exit':
             close()
             break
+
+
 
         # Invalid Choice
         else:
@@ -228,11 +234,11 @@ def select_connection(connection_id, get_response):
 # Step 19: Define `send_commands()` Function to Send Commands to the Client
 def send_commands():
     while True:
-        prompt = f"({arrInfo[0]}){arrInfo[1]}@{arrInfo[4]}"
-        strChoice = input(f"[{prompt}]$>> ")
+        prompt = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
+        strChoice = input(f"{prompt}$>> ")
 
         if strChoice[:3] == '--m' and len(strChoice) > 3:
-            strMsg= 'msg' + strChoice[4:]
+            strMsg= 'msg' + strChoice[3:]
             send(str.encode(strMsg))
 
 
