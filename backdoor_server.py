@@ -123,6 +123,8 @@ def menu_help():
     Help Menu:
     ---------
     --l, list: Connect to Server
+    --i [CONNECTION-ID]: Interact with Connections
+    --m [MESSAGE]: Send Message to Client
     
     --help, help: Show Help Menu
     --x, exit: Disconnect from Server
@@ -136,17 +138,28 @@ def main_menu():
         # Get Command from User input
         strChoice = input("\n[?] Command $>> ")
 
-        # List Connections Command, --l or list
+        # --l or list: Command to List Available Connections
         if strChoice == '--l' or strChoice == 'list':
             list_connections()
 
-        # Exit Command, --x or exit
+        # --i [CONNECTION-ID]: Command for Interact(Select) with Connections
+        elif strChoice[:3] == '--i' and len(strChoice) > 3:
+            # Select Connection and store it into global variable in name `conn`
+            conn = select_connection(strChoice[4:], 'True')
+
+            # if conn is not, None send commands to the client
+            if conn is not None:
+                send_commands()
+
+        # --x or exit: Command for Close Server, Client and Connection
         elif strChoice == '--x' or strChoice == 'exit':
             close()
             break
 
+        # Invalid Choice
         else:
             print("[-] Invalid Choice, Please Try Again")
+            menu_help()
             main_menu()     # or continue
 
 
@@ -205,11 +218,13 @@ def select_connection(connection_id, get_response):
 		#arrAddresses[connection_id][1] is Client PC Info
 
         # Check if the get_response is True show Connected message to the user
-        if get_response:
+        if get_response == 'True':
             print(f"[+] You Are Connect to {arrInfo[0]}  ......\n")
 
         return conn
 
+def send_commands():
+    pass
 
 
 
