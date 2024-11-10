@@ -225,6 +225,7 @@ def list_connections():
     else:
         print(fColors.LIGHT_RED + "[-] No Connections Found!!." + fColors.RESET)
 
+
 # Step 17: Define `select_connection()` Function to Select a Connection
 def select_connection(connection_id, get_response):
     global conn, arrInfo, selectedID # noqa
