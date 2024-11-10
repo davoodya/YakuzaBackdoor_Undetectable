@@ -134,7 +134,7 @@ def menu_help():
 def main_menu():
     while True:
         # Get Command from User input
-        strChoice = input("\n$>> ")
+        strChoice = input("\n[?] Command $>> ")
 
         # List Connections Command, --l or list
         if strChoice == '--l' or strChoice == 'list':
@@ -184,10 +184,54 @@ def list_connections():
     else:
         print("[-] No Connections Found!!.")
 
+# Step 17: Define `select_connection()` Function to Select a Connection
+def select_connection(connection_id, get_response):
+    global conn, arrInfo
+    try:
+        connection_id = int(connection_id)
+        conn = arrConnections[connection_id]
+
+    except: print("[-] Invalid Choice! Please Try Again."); return # noqa
+
+    # if any error not happens, fill arrInfo by User Information
+    else:
+        # arrInfo = [IP, PORT, OS, User] from Client
+        arrInfo = (str(arrAddresses[connection_id][0]), str(arrAddresses[connection_id][2]),
+                   str(arrAddresses[connection_id][3]), str(arrAddresses[connection_id][4]))
+        #arrAddresses[connection_id][0] is Client IP Address
+		#arrAddresses[connection_id][2] is Client PORT
+		#arrAddresses[connection_id][3] is Client OS Name
+		#arrAddresses[connection_id][4] is Client Username
+		#arrAddresses[connection_id][1] is Client PC Info
+
+        # Check if the get_response is True show Connected message to the user
+        if get_response:
+            print(f"[+] You Are Connect to {arrInfo[0]}  ......\n")
+
+        return conn
+
+
 
 
 
 """ Section 2: Implement Multithreading """
+# Step 9: Define a Function to Create Threads and run work() Multithreading
+def create_threads():
+    for _ in range(intThreads):
+        objThread = Thread(target=work)
+        objThread.daemon = True
+        objThread.start()
+
+    queue.join()
+
+
+# Step 10: Define a Function to Create Jobs
+def create_jobs():
+    for intThreads in arrJobs:
+        queue.put(intThreads)
+
+    queue.join()
+
 
 # Step 8: Define the Main Job Function, which use as a Thread in Multithreading
 def work():
@@ -211,25 +255,6 @@ def work():
         queue.task_done()
         queue.task_done()
         exit(0)
-
-
-# Step 9: Define a Function to Create Threads and run work() Multithreading
-def create_threads():
-    for _ in range(intThreads):
-        objThread = Thread(target=work)
-        objThread.daemon = True
-        objThread.start()
-
-    queue.join()
-
-
-# Step 10: Define a Function to Create Jobs
-def create_jobs():
-    for intThreads in arrJobs:
-        queue.put(intThreads)
-
-    queue.join()
-
 
 # Step 11: Call Function's to Run the app on Multithreading
 create_threads()
