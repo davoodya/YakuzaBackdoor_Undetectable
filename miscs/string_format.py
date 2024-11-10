@@ -3,7 +3,7 @@
 """
 
 # Step 0.4: Define stringFormat class contains all text formatting byte chars
-class stringFormat:
+class StringFormat:
     # Text Styles
     BOLD = '\033[1m'
     DIM = '\033[2m'
