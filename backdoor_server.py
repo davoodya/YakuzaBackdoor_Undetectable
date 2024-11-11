@@ -275,7 +275,7 @@ def send_commands():
         elif strChoice == '--p' or strChoice == 'screenshot':
             screenshot()
 
-        elif strChoice == '--p 1' or strChoice == 'pr_screenshoot':
+        elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
             screenshot_primary()
 
 

