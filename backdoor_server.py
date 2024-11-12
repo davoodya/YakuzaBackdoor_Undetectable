@@ -407,7 +407,6 @@ def send_commands():
         # --x or exit: Command for Close Server, Client and Connection in Command MODE
         elif strChoice == '--x' or strChoice == 'exit':
             close()
-            objSocket.close()
             exit(1)
 
         elif strChoice == 'goback':
