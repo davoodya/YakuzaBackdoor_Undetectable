@@ -16,7 +16,7 @@ import platform
 from time import sleep
 import ctypes
 import subprocess
-import threading
+# import threading
 from wmi import WMI
 import webbrowser
 import pyscreeze
@@ -26,9 +26,9 @@ from PIL import ImageGrab
 import win32api
 import winerror
 import win32event
-import win32crypt
+# import win32crypt
 
-from winreg import *
+# from winreg import *
 
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat

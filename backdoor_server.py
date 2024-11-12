@@ -17,7 +17,6 @@ from time import sleep, strftime
 from threading import Thread
 from os import path
 
-from miscs import *
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat
 
