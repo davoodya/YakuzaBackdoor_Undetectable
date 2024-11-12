@@ -146,11 +146,23 @@ def commands_help():
     print(fColors.LIGHT_BLUE+ "\nCommands List Help Menu:")
     print(fColors.LIGHT_WHITE+"""
     ---------
+    ---------: Built-In Commands:---------
     --m [MESSAGE]: Send Message to the Client
     --o [WEBSITE_URL]: Open Website on the Client Machine
+    --p: Take Screenshot from All Monitors
+    --p 1: Take Screenshot from Primary Monitor
+    --x, exit: Terminate Connection, Close Backdoor on the Client
+    --x 1: Lock Client Machine
     
     --help, help: Show Help Menu
-    --x, exit: Disconnect from Server
+    goback: From Command Menu Go Back to Main Menu 
+    
+    ---------: Command Prompt Mode :---------
+    --e: Switch to Command Prompt Mode
+    goback: From Command Prompt Mode Go Back to Main Menu 
+    
+
+    
     
     """ + fColors.RESET)
 
