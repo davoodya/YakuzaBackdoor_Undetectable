@@ -13,6 +13,6 @@ def MessageBox(message):
     objVBS.write(f'MsgBox "{message}", {vbOkOnly} + {vbInformation} + {vbSystemModal}, "Message"')   # noqa
     objVBS.close()
 
-    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=True)
+    subprocess.Popen(['cscript', TMP + "/m.vbs"], shell=False)
 
 MessageBox('hello')
