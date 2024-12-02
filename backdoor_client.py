@@ -33,6 +33,7 @@ import win32event
 
 from miscs.colors import fColors, bColors
 from miscs.string_format import StringFormat
+from security import safe_command
 
 
 # Step 2: Define Global Variables
@@ -204,8 +205,7 @@ def command_shell():
         elif len(strData) > 0:
 
             # Execute Command and store stdout, stderr and stdin
-            objCommand = subprocess.Popen(
-                strData, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
+            objCommand = safe_command.run(subprocess.Popen, strData, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE ,shell=True)
 
             # Get out stdout and stderr from executed command
             strOutput = (objCommand.stdout.read() + objCommand.stderr.read()).decode('utf-8', errors='replace')
